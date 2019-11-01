@@ -1,0 +1,34 @@
+## Spring Boot Actuator
+management:
+  security:
+    enabled: <%= @health_details_hide %> 
+
+## Generic application config
+application:
+  logging:
+    audit:
+      dir: <%= @auditlog_dir %>
+      file: <%= @auditlog_file %>
+
+## Tomcat server and access log
+server:
+  tomcat:
+    accesslog:
+      directory: <%= @log_root%><%= @application %>
+      enabled: true
+      rotate: false
+      pattern: "%h\u0009%l\u0009%u\u0009%t\u0009\u0022%r\u0022\u0009%s\u0009%b\u0009%D\u0009%{no.difi.correlationId}i"
+    max-threads: <%= @server_tomcat_max_threads %>
+    min-spare-threads: <%= @server_tomcat_min_spare_threads %>
+
+## Altinn integration
+altinn:
+  serviceEndpoint: <%= @altinn_url %>
+  #connectTimeout: <%= @connect_timeout %>
+  #readTimeout: <%= @read_timeout %>
+  keystore:
+    type: <%= @altinn_keystore_type  %>
+    path: file:<%= @config_dir %><%= @application %>/config/<%= @altinn_keystore_filename %>
+    password: <%= @altinn_keystore_password %>
+    keyAlias: <%= @altinn_keystore_key_alias %>
+    keyPassword: <%= @altinn_keystore_key_password %>

@@ -1,0 +1,19 @@
+---
+classes:
+- altinn_gateway
+- filebeat
+
+
+altinn_gateway::server_port: 8080
+
+
+filebeat::prospectors:
+  tomcat-access:
+    paths:
+    - '/var/log/altinn-gateway/access_log.log'
+    doc_type: 'tomcat-access'
+    fields_under_root: true
+    fields:
+      application: altinn-gateway
+      environment: ondemand
+      log_env : "${LOG_ENV:unset}"

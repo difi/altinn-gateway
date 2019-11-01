@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+
+version=DEV-SNAPSHOT
+registry=local #local==henter fra fil, bygget av maven
+localConfig=$1
+stackName=altinn
+
+rm -rf docker/altinn_gateway/puppet_hiera/*  docker/altinn_gateway/puppet_modules/* docker/altinn_gateway/jar/*|| exit 1
+mvn package -DskipTests || exit 1
+docker/build-images ${registry} ${version} ${localConfig}|| exit 1
+rm -rf docker/altinn_gateway/puppet_hiera/*  docker/altinn_gateway/puppet_modules/* docker/altinn_gateway/jar/*|| exit 1
+echo "LOG_ENV=$(whoami)" > docker/log_config
+VERSION=${version} REGISTRY=${registry} docker stack deploy -c docker/stack.yml --resolve-image=never ${stackName} || exit 1
+rm docker/log_config
+docker stack deploy -c docker/stack-local.yml ${stackName} || exit 1
+docker service inspect ${stackName}_desktop --format \
+    'Miljøet kan nås på vnc://localhost:{{(index .Endpoint.Ports 0).PublishedPort}} eller http://localhost:{{(index .Endpoint.Ports 1).PublishedPort}} (passord: vncpassword)'

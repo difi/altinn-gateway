@@ -1,0 +1,37 @@
+# Spring Boot Actuator
+management:
+  endpoints:
+    web:
+      base-path: /
+      exposure:
+        include: "version, info, health"
+  health:
+    defaults:
+      enabled: true
+    jms:
+      enabled: true
+    ldap:
+      enabled: true
+  endpoint:
+    health:
+      show-details: always
+
+## Generic application config
+application:
+  logging:
+    audit:
+      dir: c:/var/log/altinn-gateway
+      file: audit.log
+
+
+## Altinn integration
+altinn:
+  serviceEndpoint: https://folkeregisteret-api-konsument.sits.no/folkeregisteret/offentlig-med-hjemmel/api/v1/personer
+  #connectTimeout: <%= @connect_timeout %>
+  #readTimeout: <%= @read_timeout %>
+  keystore:
+    type: JKS
+    path: classpath:difi-testsertifikat.jks
+    password: oBr8YZuZsbic4gpP
+    keyAlias: avsender
+    keyPassword: oBr8YZuZsbic4gpP

@@ -1,0 +1,26 @@
+version: '3.3'
+
+services:
+  altinn-gateway:
+    image: ${REGISTRY}/altinn-gateway:${VERSION}
+    configs:
+      - log_config
+    extra_hosts:
+      - "eid-elk-app01.dmz.local:10.243.220.21"
+    ports:
+      - 8080
+    networks:
+      atest:
+    dns: 8.8.8.8
+    deploy:
+      placement:
+        constraints:
+          - node.labels.atest == true
+
+networks:
+  atest:
+    driver: overlay
+    attachable: true
+configs:
+  log_config:
+    file: ./log_config
