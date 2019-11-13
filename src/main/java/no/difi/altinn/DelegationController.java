@@ -19,15 +19,15 @@ import java.util.List;
 @RequiredArgsConstructor
 public class DelegationController {
 
-    @GetMapping(params = {"scope", "consumerOrgnr", "supplierOrgnr"})
-    public ResponseEntity<List<Delegation>> getDelegation(@RequestParam String scope,
-                                                         @RequestParam String consumerOrgnr,
-                                                         @RequestParam String supplierOrgnr) {
+    @GetMapping(params = {"scope", "consumer_org", "supplier_org"}, consumes = "application/x-www-form-urlencoded")
+    public ResponseEntity<List<Delegation>> getDelegation(@RequestParam(name = "scope") String scope,
+                                                         @RequestParam(name = "consumer_org") String consumerOrg,
+                                                         @RequestParam(name = "supplier_org") String supplierOrg) {
         String[] scopes = new String[]{"scope1", "scope2", scope};
         Delegation delegation = Delegation.builder()
                 .scopes(scopes)
-                .consumerOrgnr(consumerOrgnr)
-                .supplierOrgnr(supplierOrgnr)
+                .consumerOrgnr(consumerOrg)
+                .supplierOrgnr(supplierOrg)
                 .delegationScheme("delegationScheme")
                 .build();
         List<Delegation> delegations = Collections.singletonList(delegation);
