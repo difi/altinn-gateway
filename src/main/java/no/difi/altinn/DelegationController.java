@@ -19,7 +19,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class DelegationController {
 
-    @GetMapping(params = {"scope", "consumer_org", "supplier_org"}, consumes = "application/x-www-form-urlencoded")
+    @GetMapping(params = {"scope", "consumer_org", "supplier_org"})
     public ResponseEntity<List<Delegation>> getDelegation(@RequestParam(name = "scope") String scope,
                                                          @RequestParam(name = "consumer_org") String consumerOrg,
                                                          @RequestParam(name = "supplier_org") String supplierOrg) {
