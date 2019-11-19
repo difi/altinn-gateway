@@ -23,6 +23,11 @@ application:
       dir: c:/var/log/altinn-gateway
       file: audit.log
 
+test:
+  blacklist:
+    404: tom-liste
+    503: ikke-tilgjengelig
+
 
 ## Altinn integration
 altinn:

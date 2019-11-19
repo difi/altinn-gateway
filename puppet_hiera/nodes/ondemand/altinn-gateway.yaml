@@ -5,6 +5,8 @@ classes:
 
 
 altinn_gateway::server_port: 8080
+altinn_gateway::test_tom_liste: tom-liste
+altinn_gateway::test_ikke_tilgjengelig: ikke-tilgjengelig
 
 
 filebeat::prospectors:

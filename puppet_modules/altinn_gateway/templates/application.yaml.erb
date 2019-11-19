@@ -32,3 +32,8 @@ altinn:
     password: <%= @altinn_keystore_password %>
     keyAlias: <%= @altinn_keystore_key_alias %>
     keyPassword: <%= @altinn_keystore_key_password %>
+
+test:
+  blacklist:
+    404: <%= @test_tom_liste %>
+    503: <%= @test_ikke_tilgjengelig %>
