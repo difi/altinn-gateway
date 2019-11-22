@@ -37,7 +37,7 @@ public class DelegationController {
         if (isBlackListAltinnUnavailable(scope)) {
             return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).build();
         }
-        String[] scopes = new String[]{"scope1", "scope2", scope};
+        String[] scopes = new String[]{scope};
         Delegation delegation = Delegation.builder()
                 .scopes(scopes)
                 .consumerOrgnr(consumerOrg)
