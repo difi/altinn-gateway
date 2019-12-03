@@ -15,7 +15,7 @@ import java.security.KeyStore;
 @ConfigurationProperties("altinn")
 public class ClientProperties {
     @NotNull
-    private String serviceEndpoint;
+    private String delegationsEndpoint;
 
     @Valid
     private KeyStoreProperties keystore;

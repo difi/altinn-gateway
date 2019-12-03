@@ -20,9 +20,12 @@ class altinn_gateway::params {
   $altinn_keystore_password         = 'oBr8YZuZsbic4gpP'
   $altinn_keystore_key_alias        = 'test'
   $altinn_keystore_key_password     = 'oBr8YZuZsbic4gpP'
+  $altinn_gateway_basic_username    = user
+  $altinn_gateway_basic_password    = password
   $server_tomcat_max_threads        = 200
   $server_tomcat_min_spare_threads  = 10
   $health_details_hide              = false
   $test_tom_liste                   = null
   $test_ikke_tilgjengelig           = null
+  $test_mock                        = false
 }

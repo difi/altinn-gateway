@@ -3,12 +3,14 @@ package no.difi.altinn;
 import lombok.extern.slf4j.Slf4j;
 import no.difi.altinn.config.ClientProperties;
 import no.difi.altinn.domain.Delegation;
-import org.apache.http.client.methods.HttpHead;
 import org.apache.http.client.utils.URIBuilder;
 import org.springframework.http.*;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
+import java.util.Objects;
 
 @Slf4j
 public class AltinnClient {
@@ -21,11 +23,16 @@ public class AltinnClient {
         this.template = template;
     }
 
-    public URIBuilder getURIBuilder() {
-        return new URIBuilder().setPath(properties.getServiceEndpoint());
+    URIBuilder getDelegationsURIBuilder() {
+        try {
+            return new URIBuilder(properties.getDelegationsEndpoint());
+        } catch(Exception e) {
+            log.error("Couldn't parse delegations endpoint");
+            throw new IllegalStateException("Couldn't parse delegations endpoint");
+        }
     }
 
-    public Delegation getDelegation(String url) {
+    List<Delegation> getDelegation(String url) {
         HttpHeaders headers = new HttpHeaders();
         headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
 
@@ -33,9 +40,8 @@ public class AltinnClient {
 
         log.debug("Gjer oppslag på: " + url);
 
-
-        ResponseEntity<Delegation> delegation = template.exchange(url, HttpMethod.GET, entity, Delegation.class);
-        return delegation.getBody();
+        ResponseEntity<Delegation[]> responseEntity = template.exchange(url, HttpMethod.GET, entity, Delegation[].class);
+        return Arrays.asList(Objects.requireNonNull(responseEntity.getBody()));
 
     }
 }

@@ -24,7 +24,7 @@ import java.security.KeyStore;
 public class ClientConfig {
 
     @Bean
-    public AltinnClient AltinnClient(ClientProperties properties) {
+    public AltinnClient altinnClient(ClientProperties properties) {
         CloseableHttpClient httpClient = getCloseableHttpClient(properties);
         HttpComponentsClientHttpRequestFactory requestFactory = new HttpComponentsClientHttpRequestFactory();
         requestFactory.setHttpClient(httpClient);

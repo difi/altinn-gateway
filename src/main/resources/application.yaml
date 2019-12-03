@@ -27,13 +27,21 @@ test:
   blacklist:
     404: tom-liste
     503: ikke-tilgjengelig
+  mock:
+    enabled: false
 
+spring:
+  security:
+    user:
+      name: user
+      password: password
 
 ## Altinn integration
 altinn:
-  serviceEndpoint: https://folkeregisteret-api-konsument.sits.no/folkeregisteret/offentlig-med-hjemmel/api/v1/personer
-  #connectTimeout: <%= @connect_timeout %>
-  #readTimeout: <%= @read_timeout %>
+#  serviceEndpoint: https://folkeregisteret-api-konsument.sits.no/folkeregisteret/offentlig-med-hjemmel/api/v1/personer
+  delegationsEndpoint: http://localhost:9991/altinn-mock/delegations
+#  connectTimeout: <%= @connect_timeout %>
+#  readTimeout: <%= @read_timeout %>
   keystore:
     type: JKS
     path: classpath:difi-testsertifikat.jks

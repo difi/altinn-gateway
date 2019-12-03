@@ -23,7 +23,7 @@ server:
 
 ## Altinn integration
 altinn:
-  serviceEndpoint: <%= @altinn_url %>
+  delegationsEndpoint: <%= @altinn_url %>/delegations
   #connectTimeout: <%= @connect_timeout %>
   #readTimeout: <%= @read_timeout %>
   keystore:
@@ -37,3 +37,12 @@ test:
   blacklist:
     404: <%= @test_tom_liste %>
     503: <%= @test_ikke_tilgjengelig %>
+  mock:
+    enabled: <%= @test_mock %>
+
+spring:
+  security:
+    user:
+      name: <%= @altinn_gateway_basic_username %>
+      password: <%= @altinn_gateway_basic_password %>
+

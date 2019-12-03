@@ -16,9 +16,8 @@ import java.util.Collections;
 import java.util.List;
 
 @Controller
-@RequestMapping(value = "/delegation")
+@RequestMapping(value = "/delegations")
 @Slf4j
-@RequiredArgsConstructor
 public class DelegationController {
 
     @Value("${test.blacklist.404}")
@@ -27,10 +26,27 @@ public class DelegationController {
     @Value("${test.blacklist.503}")
     private String blackListAltinnUnavailableScope;
 
-    @GetMapping(params = {"scope", "consumer_org", "supplier_org"})
-    public ResponseEntity<List<Delegation>> getDelegation(@RequestParam(name = "scope") String scope,
-                                                         @RequestParam(name = "consumer_org") String consumerOrg,
-                                                         @RequestParam(name = "supplier_org") String supplierOrg) {
+    @Value("${test.mock.enabled:false}")
+    private boolean mockEnabled;
+
+    private final AltinnService altinnService;
+
+    public DelegationController(AltinnService altinnService) {
+        this.altinnService = altinnService;
+    }
+
+    @GetMapping
+    public ResponseEntity<List<Delegation>> getDelegations(@RequestParam(name = "scope") String scope,
+                                                           @RequestParam(name = "consumer_org", required = false) String consumerOrg,
+                                                           @RequestParam(name = "supplier_org", required = false) String supplierOrg) {
+        if (mockEnabled) {
+            return getMockDelegations(scope, consumerOrg, supplierOrg);
+        } else {
+            return ResponseEntity.ok(altinnService.getDelegations(scope, consumerOrg, supplierOrg));
+        }
+    }
+
+    private ResponseEntity<List<Delegation>> getMockDelegations(@RequestParam(name = "scope") String scope, @RequestParam(name = "consumer_org") String consumerOrg, @RequestParam(name = "supplier_org") String supplierOrg) {
         if (isBlackListEmptyList(scope)) {
             return ResponseEntity.ok(new ArrayList<>());
         }

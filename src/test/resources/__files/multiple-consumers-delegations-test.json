@@ -1,0 +1,20 @@
+[
+  {
+    "scopes": [
+      "testscope"
+    ],
+    "consumer_org": "940763029",
+    "supplier_org": "967630291",
+    "delegation_scheme_Id": "29a6ffbc-da41-4f31-b56c-affe59d1b73b",
+    "created": "2019-07-17T12:04:00+02:00"
+  },
+  {
+    "scopes": [
+      "testscope"
+    ],
+    "consumer_org": "950763029",
+    "supplier_org": "967630291",
+    "delegation_scheme_Id": "0c5d2706-3eec-4581-9cc7-c73adc0e5ef4",
+    "created": "2019-07-17T12:04:00+02:00"
+  }
+]

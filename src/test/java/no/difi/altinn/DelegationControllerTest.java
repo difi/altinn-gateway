@@ -1,8 +1,11 @@
 package no.difi.altinn;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
+import com.github.tomakehurst.wiremock.stubbing.ServeEvent;
 import no.difi.altinn.domain.Delegation;
 import org.apache.http.client.utils.URIBuilder;
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -13,9 +16,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.List;
 
+import static com.github.tomakehurst.wiremock.client.WireMock.*;
+import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertNotNull;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -25,7 +31,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class DelegationControllerTest {
 
     @Rule
-    public WireMockRule wireMockRule = new WireMockRule(8099); // No-args constructor defaults
+    public WireMockRule wireMockRule = new WireMockRule(9991); // No-args constructor defaults
 
     @Autowired
     private DelegationController delegationController;
@@ -34,24 +40,87 @@ public class DelegationControllerTest {
     MockMvc mockMvc;
 
     @Test
-    public void exampleTest() {
-//        stubFor(get(urlEqualTo("/my/resource"))
-//                .withHeader("Accept", equalTo("text/xml"))
-//                .willReturn(aResponse()
-//                        .withStatus(200)
-//                        .withHeader("Content-Type", "text/xml")
-//                        .withBody("<response>Some content</response>")));
-
+    public void getOneDelegation() {
         String scope = "scope";
-        String consumerOrgnr = "911222333";
-        String supplierOrgnr = "922444333";
-        ResponseEntity<List<Delegation>> delegation = delegationController.getDelegation(scope, consumerOrgnr, supplierOrgnr);
+        String consumerOrg = "930763029";
+        String supplierOrg = "967630291";
+        String testUrl = "/altinn-mock/delegations?scope=" + scope + "&consumer_org=" + consumerOrg + "&supplier_org=" + supplierOrg;
+        stubFor(get(urlEqualTo(testUrl))
+                .willReturn(aResponse()
+                        .withStatus(200)
+                        .withHeader("Content-Type", "application/json")
+                        .withBodyFile("delegation-test.json")));
 
-        assertNotNull(delegation);
+        ResponseEntity<List<Delegation>> delegationList = delegationController.getDelegations(scope, consumerOrg, supplierOrg);
+        List<Delegation> body = delegationList.getBody();
 
-//        verify(postRequestedFor(urlMatching("/my/resource/[a-z0-9]+"))
-//                .withRequestBody(matching(".*<message>1234</message>.*"))
-//                .withHeader("Content-Type", notMatching("application/json")));
+        assertNotNull(body);
+        assertEquals(1, body.size());
+        assertEquals(scope, body.get(0).getScopes()[0]);
+        assertEquals(consumerOrg, body.get(0).getConsumerOrgnr());
+        assertEquals(supplierOrg, body.get(0).getSupplierOrgnr());
+
+        verify(getRequestedFor(urlEqualTo(testUrl)));
+    }
+
+    @Test
+    public void getSeveralConsumersDelegations()  {
+        String scope = "testscope";
+        String supplierOrg = "967630291";
+        String testUrl = "/altinn-mock/delegations?scope=" + scope + "&supplier_org=" + supplierOrg;
+
+        stubFor(get(urlEqualTo(testUrl))
+                .willReturn(aResponse()
+                        .withStatus(200)
+                        .withHeader("Content-Type", "application/json")
+                        .withBodyFile("multiple-consumers-delegations-test.json")));
+
+        ResponseEntity<List<Delegation>> delegationList = delegationController.getDelegations(scope, null, supplierOrg);
+        List<Delegation> body = delegationList.getBody();
+
+        String consumerOrg1 = "940763029";
+        String consumerOrg2 = "950763029";
+
+        assertNotNull(body);
+        assertEquals(2, body.size());
+        assertEquals(scope, body.get(0).getScopes()[0]);
+        assertEquals(scope, body.get(1).getScopes()[0]);
+        assertEquals(consumerOrg1, body.get(0).getConsumerOrgnr());
+        assertEquals(consumerOrg2, body.get(1).getConsumerOrgnr());
+        assertEquals(supplierOrg, body.get(0).getSupplierOrgnr());
+        assertEquals(supplierOrg, body.get(1).getSupplierOrgnr());
+
+        verify(getRequestedFor(urlEqualTo(testUrl)));
+    }
+
+    @Test
+    public void getSeveralSuppliersDelegations()  {
+        String scope = "testscope";
+        String consumerOrg = "940763029";
+        String testUrl = "/altinn-mock/delegations?scope=" + scope + "&consumer_org=" + consumerOrg;
+
+        stubFor(get(urlEqualTo(testUrl))
+                .willReturn(aResponse()
+                        .withStatus(200)
+                        .withHeader("Content-Type", "application/json")
+                        .withBodyFile("multiple-suppliers-delegations-test.json")));
+
+        ResponseEntity<List<Delegation>> delegationList = delegationController.getDelegations(scope, consumerOrg, null);
+        List<Delegation> body = delegationList.getBody();
+
+        String supplierOrg1 = "967630291";
+        String supplierOrg2 = "970763029";
+
+        assertNotNull(body);
+        assertEquals(2, body.size());
+        assertEquals(scope, body.get(0).getScopes()[0]);
+        assertEquals(scope, body.get(1).getScopes()[0]);
+        assertEquals(consumerOrg, body.get(0).getConsumerOrgnr());
+        assertEquals(consumerOrg, body.get(1).getConsumerOrgnr());
+        assertEquals(supplierOrg1, body.get(0).getSupplierOrgnr());
+        assertEquals(supplierOrg2, body.get(1).getSupplierOrgnr());
+
+        verify(getRequestedFor(urlEqualTo(testUrl)));
     }
 
     @Test

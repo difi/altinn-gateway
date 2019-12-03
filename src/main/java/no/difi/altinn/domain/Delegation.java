@@ -1,15 +1,16 @@
 package no.difi.altinn.domain;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
-@JsonInclude
 @Getter
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class Delegation {
-
     @JsonProperty("scopes")
     private String[] scopes;
 

@@ -21,11 +21,14 @@ class altinn_gateway (
   String $altinn_keystore_password          = $altinn_gateway::params::altinn_keystore_password,
   String $altinn_keystore_key_alias         = $altinn_gateway::params::altinn_keystore_key_alias,
   String $altinn_keystore_key_password      = $altinn_gateway::params::altinn_keystore_key_password,
+  String $altinn_gateway_basic_username     = $altinn_gateway::params::altinn_gateway_basic_username,
+  String $altinn_gateway_basic_password     = $altinn_gateway::params::altinn_gateway_basic_password,
   Integer $server_tomcat_max_threads        = $altinn_gateway::params::server_tomcat_max_threads,
   Integer $server_tomcat_min_spare_threads  = $altinn_gateway::params::server_tomcat_min_spare_threads,
   Boolean $health_details_hide              = $altinn_gateway::params::health_details_hide,
   String $test_tom_liste                    = $altinn_gateway::params::test_tom_liste,
   String $test_ikke_tilgjengelig            = $altinn_gateway::params::test_ikke_tilgjengelig,
+  Boolean $test_mock                        = $altinn_gateway::params::test_mock,
 
 ) inherits altinn_gateway::params {
 
