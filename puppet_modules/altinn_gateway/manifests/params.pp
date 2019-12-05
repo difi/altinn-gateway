@@ -14,7 +14,7 @@ class altinn_gateway::params {
   $application                      = 'altinn-gateway'
   $connect_timeout                  = 10000
   $read_timeout                     = 10000
-  $altinn_url                       = 'https://folkeregisteret-api-konsument.sits.no/folkeregisteret/offentlig-med-hjemmel/api/v1/personer'
+  $altinn_url                       = 'https://at23.altinn.cloud/maskinporten-api'
   $altinn_keystore_type             = 'JKS'
   $altinn_keystore_filename         = 'difi-virkscert-altinn.jks'
   $altinn_keystore_password         = 'oBr8YZuZsbic4gpP'

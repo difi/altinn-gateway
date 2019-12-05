@@ -27,12 +27,13 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     }
 
     @Override
+    /*
+      TODO: legg til åpning for actuators og authorized for anyRequests utover det når oidc-provider er klar
+     */
     public void configure(HttpSecurity http) throws Exception {
         http.csrf().disable();
         http.authorizeRequests()
-                .antMatchers("/health", "/info", "/version")
-                .permitAll()
-                .anyRequest().authenticated()
+                .anyRequest().permitAll()
                 .and().httpBasic()
                 .and().headers().frameOptions().sameOrigin();
     }
