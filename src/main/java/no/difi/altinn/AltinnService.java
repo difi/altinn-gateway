@@ -18,10 +18,10 @@ public class AltinnService {
         URIBuilder uriBuilder = client.getDelegationsURIBuilder()
                 .setParameter("scope", scope);
         if (consumerOrg != null) {
-            uriBuilder.setParameter("consumer_org", consumerOrg);
+            uriBuilder.setParameter("consumerOrg", consumerOrg);
         }
         if (supplierOrg != null) {
-            uriBuilder.setParameter("supplier_org", supplierOrg);
+            uriBuilder.setParameter("supplierOrg", supplierOrg);
         }
         return client.getDelegation(uriBuilder.toString());
     }

@@ -12,6 +12,7 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.util.TestPropertyValues;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.web.servlet.MockMvc;
@@ -41,10 +42,10 @@ public class DelegationControllerTest {
 
     @Test
     public void getOneDelegation() {
-        String scope = "scope";
+        String scope = "testscope";
         String consumerOrg = "930763029";
         String supplierOrg = "967630291";
-        String testUrl = "/altinn-mock/delegations?scope=" + scope + "&consumer_org=" + consumerOrg + "&supplier_org=" + supplierOrg;
+        String testUrl = "/altinn-mock/delegations?scope=" + scope + "&consumerOrg=" + consumerOrg + "&supplierOrg=" + supplierOrg;
         stubFor(get(urlEqualTo(testUrl))
                 .willReturn(aResponse()
                         .withStatus(200)
@@ -67,7 +68,7 @@ public class DelegationControllerTest {
     public void getSeveralConsumersDelegations()  {
         String scope = "testscope";
         String supplierOrg = "967630291";
-        String testUrl = "/altinn-mock/delegations?scope=" + scope + "&supplier_org=" + supplierOrg;
+        String testUrl = "/altinn-mock/delegations?scope=" + scope + "&supplierOrg=" + supplierOrg;
 
         stubFor(get(urlEqualTo(testUrl))
                 .willReturn(aResponse()
@@ -97,7 +98,7 @@ public class DelegationControllerTest {
     public void getSeveralSuppliersDelegations()  {
         String scope = "testscope";
         String consumerOrg = "940763029";
-        String testUrl = "/altinn-mock/delegations?scope=" + scope + "&consumer_org=" + consumerOrg;
+        String testUrl = "/altinn-mock/delegations?scope=" + scope + "&consumerOrg=" + consumerOrg;
 
         stubFor(get(urlEqualTo(testUrl))
                 .willReturn(aResponse()
@@ -123,42 +124,4 @@ public class DelegationControllerTest {
         verify(getRequestedFor(urlEqualTo(testUrl)));
     }
 
-    @Test
-    public void getDelegation() throws Exception {
-        String url = new URIBuilder("/delegation")
-                .addParameter("scope", "myScope")
-                .addParameter("consumer_org", "myConsumer")
-                .addParameter("supplier_org", "mySupplier")
-                .build().toString();
-
-        mockMvc.perform(MockMvcRequestBuilders.get(url)
-                .contentType("application/x-www-form-urlencoded"))
-                .andExpect(status().is2xxSuccessful());
-    }
-
-    @Test
-    public void getDelegationBlacklist404() throws Exception {
-        String url = new URIBuilder("/delegation")
-                .addParameter("scope", "tom-liste")
-                .addParameter("consumer_org", "myConsumer")
-                .addParameter("supplier_org", "mySupplier")
-                .build().toString();
-
-        mockMvc.perform(MockMvcRequestBuilders.get(url)
-                .contentType("application/x-www-form-urlencoded"))
-                .andExpect(status().is2xxSuccessful());
-    }
-
-    @Test
-    public void getDelegationBlacklist503() throws Exception {
-        String url = new URIBuilder("/delegation")
-                .addParameter("scope", "ikke-tilgjengelig")
-                .addParameter("consumer_org", "myConsumer")
-                .addParameter("supplier_org", "mySupplier")
-                .build().toString();
-
-        mockMvc.perform(MockMvcRequestBuilders.get(url)
-                .contentType("application/x-www-form-urlencoded"))
-                .andExpect(status().is5xxServerError());
-    }
 }
