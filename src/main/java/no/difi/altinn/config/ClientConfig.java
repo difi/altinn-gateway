@@ -20,22 +20,34 @@ import java.security.KeyStore;
 
 @Slf4j
 @Configuration
-@EnableConfigurationProperties(ClientProperties.class)
+@EnableConfigurationProperties({ClientProperties.class, JwkProperties.class})
 public class ClientConfig {
 
     @Bean
-    public AltinnClient altinnClient(ClientProperties properties) {
-        CloseableHttpClient httpClient = getCloseableHttpClient(properties);
+    public AltinnClient altinnClient(ClientProperties clientProperties, JwkProperties jwkProperties) {
+        CloseableHttpClient httpClient = getCloseableHttpClient(clientProperties);
         HttpComponentsClientHttpRequestFactory requestFactory = new HttpComponentsClientHttpRequestFactory();
         requestFactory.setHttpClient(httpClient);
         RestTemplate restTemplate = new RestTemplate(requestFactory);
-        return new AltinnClient(properties, restTemplate);
+        JwtGenerator jwtGenerator = jwtGenerator(jwkProperties, clientProperties, restTemplate);
+        return new AltinnClient(clientProperties, restTemplate, jwtGenerator);
     }
 
-    private CloseableHttpClient getCloseableHttpClient(ClientProperties properties) {
+    @Bean
+    public JwtGenerator jwtGenerator(JwkProperties jwkProperties, ClientProperties clientProperties, RestTemplate restTemplate) {
+        return new JwtGenerator(jwkProperties, clientProperties, restTemplate);
+    }
+
+    @Bean
+    public CloseableHttpClient getCloseableHttpClient(ClientProperties properties) {
         return HttpClients.custom()
                 .setSSLSocketFactory(new SSLConnectionSocketFactory(sslContext(properties)))
                 .build();
+    }
+
+    @Bean
+    public RestTemplate restTemplate() {
+        return new RestTemplate();
     }
 
     private SSLContext sslContext(ClientProperties properties) {

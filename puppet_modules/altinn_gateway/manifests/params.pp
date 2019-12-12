@@ -20,8 +20,12 @@ class altinn_gateway::params {
   $altinn_keystore_password         = 'oBr8YZuZsbic4gpP'
   $altinn_keystore_key_alias        = 'test'
   $altinn_keystore_key_password     = 'oBr8YZuZsbic4gpP'
-  $altinn_gateway_basic_username    = user
-  $altinn_gateway_basic_password    = password
+  $altinn_gateway_basic_username    = 'user'
+  $altinn_gateway_basic_password    = 'password'
+  $altinn_gateway_client_id         = 'altinn-gateway'
+  $maskinporten_url                 = 'https://oidc-test1.difi.eon.no/idporten-oidc-provider/'
+  $altinn_aud_endpoint              = 'https://tt02.altinn.no/maskinporten-api/'
+  $altinn_access_scopes             = 'altinn:maskinporten/delegations.admin'
   $server_tomcat_max_threads        = 200
   $server_tomcat_min_spare_threads  = 10
   $health_details_hide              = false

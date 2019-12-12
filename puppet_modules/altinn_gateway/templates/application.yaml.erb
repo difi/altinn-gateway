@@ -23,7 +23,7 @@ server:
 
 ## Altinn integration
 altinn:
-  delegationsEndpoint: <%= @altinn_url %>/delegations
+  serviceEndpoint: <%= @altinn_url %>
   #connectTimeout: <%= @connect_timeout %>
   #readTimeout: <%= @read_timeout %>
   keystore:
@@ -32,6 +32,13 @@ altinn:
     password: <%= @altinn_keystore_password %>
     keyAlias: <%= @altinn_keystore_key_alias %>
     keyPassword: <%= @altinn_keystore_key_password %>
+
+maskinporten:
+  iss: <%= @altinn_gateway_client_id %>
+  aud: <%= @maskinporten_url %>
+  resource: <%= @altinn_aud_endpoint %>
+  tokenEndpoint: <%= @maskinporten_url %>/token
+  scope: <%= @altinn_access_scopes %>
 
 test:
   blacklist:

@@ -61,7 +61,6 @@ public class DelegationController {
                 .delegationScheme("delegationScheme")
                 .build();
         List<Delegation> delegations = Collections.singletonList(delegation);
-        //TODO: Kall Altinn
         return ResponseEntity.ok(delegations);
     }
 

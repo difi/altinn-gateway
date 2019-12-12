@@ -1,15 +1,14 @@
 package no.difi.altinn.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Getter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Delegation {
     @JsonProperty("scopes")
     private String[] scopes;
@@ -20,6 +19,6 @@ public class Delegation {
     @JsonProperty("supplier_org")
     private String supplierOrgnr;
 
-    @JsonProperty("delegation_scheme")
+    @JsonProperty("delegation_scheme_Id")
     private String delegationScheme;
 }
