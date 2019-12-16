@@ -32,6 +32,8 @@ public class JwtGenerator {
 
     private RestTemplate restTemplate;
 
+    private String currentAccessToken;
+
     public JwtGenerator(JwkProperties properties, ClientProperties clientProperties, RestTemplate restTemplate) {
         this.properties = properties;
         this.clientProperties = clientProperties;
@@ -39,9 +41,17 @@ public class JwtGenerator {
     }
 
     public String acquireAccessToken() {
+        if (currentAccessToken != null) {
+            return currentAccessToken;
+        }
+        return acquireNewAccessToken();
+    }
+
+    public String acquireNewAccessToken() {
         String jwt = makeJwt();
         TokenResponse tokenResponse = callTokenEndpoint(properties.getTokenEndpoint(), jwt);
-        return tokenResponse.getAccessToken();
+        currentAccessToken = tokenResponse.getAccessToken();
+        return currentAccessToken;
     }
 
     private String makeJwt() {
@@ -93,6 +103,4 @@ public class JwtGenerator {
 
         return restTemplate.postForObject(tokenEndpoint, request, TokenResponse.class);
     }
-
-
 }

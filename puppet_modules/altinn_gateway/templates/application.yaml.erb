@@ -24,6 +24,7 @@ server:
 ## Altinn integration
 altinn:
   serviceEndpoint: <%= @altinn_url %>
+  escapeScopenames: <%= @altinn_escape_scopenames %>
   #connectTimeout: <%= @connect_timeout %>
   #readTimeout: <%= @read_timeout %>
   keystore:

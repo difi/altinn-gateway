@@ -38,6 +38,7 @@ spring:
 
 ## Altinn integration
 altinn:
+  escapeScopenames: false
   #  delegationsEndpoint: http://localhost:9991/altinn-mock/delegations
 #  connectTimeout: <%= @connect_timeout %>
 #  readTimeout: <%= @read_timeout %>
@@ -47,7 +48,7 @@ altinn:
     password: oBr8YZuZsbic4gpP
     keyAlias: avsender
     keyPassword: oBr8YZuZsbic4gpP
-  serviceEndpoint: https://at23.altinn.cloud/maskinporten-api/
+  serviceEndpoint: https://at23.altinn.cloud/maskinporten-api
 
 maskinporten:
   iss: altinn-gateway
@@ -58,4 +59,6 @@ maskinporten:
   resource: https://tt02.altinn.no/maskinporten-api/
   tokenEndpoint: https://oidc-test1.difi.eon.no/idporten-oidc-provider/token
   scope: altinn:maskinporten/delegations.admin
+
+
 

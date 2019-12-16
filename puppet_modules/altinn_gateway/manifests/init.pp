@@ -16,6 +16,7 @@ class altinn_gateway (
   Integer $connect_timeout                  = $altinn_gateway::params::connect_timeout,
   Integer $read_timeout                     = $altinn_gateway::params::read_timeout,
   String $altinn_url                        = $altinn_gateway::params::altinn_url,
+  Boolean $altinn_escape_scopenames          = $altinn_gateway::params::altinn_escape_scopenames,
   String $altinn_keystore_type              = $altinn_gateway::params::altinn_keystore_type,
   String $altinn_keystore_filename          = $altinn_gateway::params::altinn_keystore_filename,
   String $altinn_keystore_password          = $altinn_gateway::params::altinn_keystore_password,

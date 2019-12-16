@@ -7,9 +7,11 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.client.HttpClientErrorException;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -44,6 +46,12 @@ public class DelegationController {
         } else {
             return ResponseEntity.ok(altinnService.getDelegations(scope, consumerOrg, supplierOrg));
         }
+    }
+
+    @ExceptionHandler({HttpClientErrorException.class})
+    public ResponseEntity handleClientErrorException(HttpClientErrorException e) {
+        log.error("Error response from Altinn: " + e.getRawStatusCode() + " - " + e.getResponseBodyAsString());
+        return new ResponseEntity(HttpStatus.BAD_GATEWAY);
     }
 
     private ResponseEntity<List<Delegation>> getMockDelegations(@RequestParam(name = "scope") String scope, @RequestParam(name = "consumer_org") String consumerOrg, @RequestParam(name = "supplier_org") String supplierOrg) {
