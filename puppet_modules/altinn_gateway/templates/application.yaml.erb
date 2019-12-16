@@ -36,9 +36,9 @@ altinn:
 
 maskinporten:
   iss: <%= @altinn_gateway_client_id %>
-  aud: <%= @maskinporten_url %>
+  aud: <%= @maskinporten_aud %>
   resource: <%= @altinn_aud_endpoint %>
-  tokenEndpoint: <%= @maskinporten_url %>/token
+  tokenEndpoint: <%= @maskinporten_token_endpoint %>
   scope: <%= @altinn_access_scopes %>
 
 test:

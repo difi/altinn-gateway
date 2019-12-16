@@ -6,14 +6,14 @@ class altinn_gateway::config inherits altinn_gateway {
     content => template("${module_name}/${altinn_gateway::artifact_id}.conf.erb"),
     owner   => $altinn_gateway::service_name,
     group   => $altinn_gateway::service_name,
-    mode    => '0400',
+    mode    => '0444',
   } ->
   file { "${altinn_gateway::config_dir}${altinn_gateway::application}/application.yaml":
     ensure  => 'file',
     content => template("${module_name}/application.yaml.erb"),
     owner   => $altinn_gateway::service_name,
     group   => $altinn_gateway::service_name,
-    mode    => '0400',
+    mode    => '0444',
   } ->
   file { "/etc/rc.d/init.d/${altinn_gateway::service_name}":
     ensure => 'link',

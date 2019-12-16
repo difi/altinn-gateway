@@ -24,7 +24,8 @@ class altinn_gateway::params {
   $altinn_gateway_basic_username    = 'user'
   $altinn_gateway_basic_password    = 'password'
   $altinn_gateway_client_id         = 'altinn-gateway'
-  $maskinporten_url                 = 'https://oidc-test1.difi.eon.no/idporten-oidc-provider/'
+  $maskinporten_token_endpoint      = 'https://oidc-test1.difi.eon.no/idporten-oidc-provider/token'
+  $maskinporten_aud                 = 'https://oidc-test1.difi.eon.no/idporten-oidc-provider/'
   $altinn_aud_endpoint              = 'https://tt02.altinn.no/maskinporten-api/'
   $altinn_access_scopes             = 'altinn:maskinporten/delegations.admin'
   $server_tomcat_max_threads        = 200
