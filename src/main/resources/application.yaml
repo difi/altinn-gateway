@@ -38,7 +38,6 @@ spring:
 
 ## Altinn integration
 altinn:
-  escapeScopenames: false
   #  delegationsEndpoint: http://localhost:9991/altinn-mock/delegations
 #  connectTimeout: <%= @connect_timeout %>
 #  readTimeout: <%= @read_timeout %>

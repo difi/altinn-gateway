@@ -7,6 +7,8 @@ import org.mockito.Mock;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.Collections;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -26,12 +28,12 @@ public class AltinnServiceTest {
     }
 
     @Test
-    void getDelegations() {
+    void getDelegations() throws URISyntaxException {
         AltinnService altinnService = new AltinnService(altinnClient);
         when(altinnClient.getAltinnURIBuilder()).thenReturn(UriComponentsBuilder.fromUriString(mockServiceEndpoint));
         String scope = "difi:myScope";
         String[] scopes = new String[]{scope};
-        String expectedUrl = mockServiceEndpoint + "/delegations?scope=difi:myScope";
+        URI expectedUrl = new URI(mockServiceEndpoint + "/delegations?scope=difi:myScope");
         Delegation delegation = Delegation.builder().scopes(scopes).build();
         when(altinnClient.getDelegations(expectedUrl, false)).thenReturn(Collections.singletonList(delegation));
         altinnService.getDelegations(scope, null, null);
@@ -39,12 +41,12 @@ public class AltinnServiceTest {
     }
 
     @Test
-    void testCache() {
+    void testCache() throws URISyntaxException {
         AltinnService altinnService = new AltinnService(altinnClient);
         when(altinnClient.getAltinnURIBuilder()).thenReturn(UriComponentsBuilder.fromUriString(mockServiceEndpoint));
         String scope = "difi:myScope";
         String[] scopes = new String[]{scope};
-        String expectedUrl = mockServiceEndpoint + "/delegations?scope=difi:myScope&consumerOrg=1234&supplierOrg=5678";
+        URI expectedUrl = new URI(mockServiceEndpoint + "/delegations?scope=difi:myScope&consumerOrg=1234&supplierOrg=5678");
         Delegation delegation = Delegation.builder().scopes(scopes).build();
         when(altinnClient.getDelegations(expectedUrl, false)).thenReturn(Collections.singletonList(delegation));
         altinnService.getDelegations(scope, "1234", "5678");
@@ -53,18 +55,10 @@ public class AltinnServiceTest {
     }
 
     @Test
-    void testUrlBuilderMethod()  {
+    void testUrlBuilderMethod() {
         AltinnService altinnService = new AltinnService(altinnClient);
         when(altinnClient.getAltinnURIBuilder()).thenReturn(UriComponentsBuilder.fromUriString(mockServiceEndpoint));
-        String url = altinnService.getUrlWithParameters("difi:myScope", "1234", "5678", true);
-        assertEquals(mockServiceEndpoint + "/delegations?scope=difi%3AmyScope&consumerOrg=1234&supplierOrg=5678", url);
-    }
-
-    @Test
-    void testUrlWithoutEscapingMethod() {
-        AltinnService altinnService = new AltinnService(altinnClient);
-        when(altinnClient.getAltinnURIBuilder()).thenReturn(UriComponentsBuilder.fromUriString(mockServiceEndpoint));
-        String url = altinnService.getUrlWithParameters("difi:myScope", "1234", "5678", false);
-        assertEquals(mockServiceEndpoint + "/delegations?scope=difi:myScope&consumerOrg=1234&supplierOrg=5678", url);
+        URI url = altinnService.getUrlWithParameters("difi:myScope", "1234", "5678");
+        assertEquals(mockServiceEndpoint + "/delegations?scope=difi:myScope&consumerOrg=1234&supplierOrg=5678", url.toString());
     }
 }
