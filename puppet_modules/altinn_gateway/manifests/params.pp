@@ -34,4 +34,5 @@ class altinn_gateway::params {
   $test_tom_liste                   = null
   $test_ikke_tilgjengelig           = null
   $test_mock                        = false
+  $maskinporten_client_kid          = ""
 }

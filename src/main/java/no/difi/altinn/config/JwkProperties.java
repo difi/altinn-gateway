@@ -26,4 +26,6 @@ public class JwkProperties {
 
     private String resource;
 
+    private String kid;
+
 }

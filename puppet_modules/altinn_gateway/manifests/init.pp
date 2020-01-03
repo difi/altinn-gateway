@@ -35,6 +35,7 @@ class altinn_gateway (
   String $test_tom_liste                    = $altinn_gateway::params::test_tom_liste,
   String $test_ikke_tilgjengelig            = $altinn_gateway::params::test_ikke_tilgjengelig,
   Boolean $test_mock                        = $altinn_gateway::params::test_mock,
+  String $maskinporten_client_kid           = $altinn_gateway::params::maskinporten_client_kid,
 
 ) inherits altinn_gateway::params {
 

@@ -1,5 +1,6 @@
 package no.difi.altinn.config;
 
+import com.google.common.base.Strings;
 import com.nimbusds.jose.JWSAlgorithm;
 import com.nimbusds.jose.JWSHeader;
 import com.nimbusds.jose.JWSSigner;
@@ -56,10 +57,14 @@ public class JwtGenerator {
 
     private String makeJwt() {
         try {
-            List<Base64> certChain = new ArrayList<>();
-            certChain.add(Base64.encode(getCertificateFromKeystore().getEncoded()));
-
-            JWSHeader jwtHeader = new JWSHeader.Builder(JWSAlgorithm.RS256).x509CertChain(certChain).build();
+            JWSHeader jwtHeader;
+            if (Strings.isNullOrEmpty(properties.getKid())) {
+                List<Base64> certChain = new ArrayList<>();
+                certChain.add(Base64.encode(getCertificateFromKeystore().getEncoded()));
+                jwtHeader = new JWSHeader.Builder(JWSAlgorithm.RS256).x509CertChain(certChain).build();
+            }else {
+                jwtHeader = new JWSHeader.Builder(JWSAlgorithm.RS256).keyID(properties.getKid()).build();
+            }
             JWTClaimsSet claims = new JWTClaimsSet.Builder()
                     .audience(properties.getAud())
                     .issuer(properties.getIss())
@@ -69,7 +74,6 @@ public class JwtGenerator {
                     .issueTime(new Date(Clock.systemUTC().millis()))
                     .expirationTime(new Date(Clock.systemUTC().millis() + 120000)) // Expiration time is 120 sec.
                     .build();
-
             JWSSigner signer = new RSASSASigner(getPrivateKeyFromKeystore());
             SignedJWT signedJWT = new SignedJWT(jwtHeader, claims);
             signedJWT.sign(signer);
