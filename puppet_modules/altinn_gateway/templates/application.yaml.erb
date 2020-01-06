@@ -1,8 +1,8 @@
-## Spring Boot Actuator
+# Spring Boot Actuator
 management:
-  security:
-    enabled: <%= @health_details_hide %> 
-
+  endpoint:
+    health:
+      show-details: <%= @health_show_details %>
 ## Generic application config
 application:
   logging:
@@ -13,6 +13,7 @@ application:
 ## Tomcat server and access log
 server:
   tomcat:
+    basedir: <%= @tomcat_tmp_dir %>
     accesslog:
       directory: <%= @log_root%><%= @application %>
       enabled: true

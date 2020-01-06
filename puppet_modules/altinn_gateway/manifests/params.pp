@@ -2,7 +2,7 @@
 class altinn_gateway::params {
   $java_home                        = hiera('platform::java_home')
   $log_root                         = '/var/log/'
-  $log_level                        = 'DEBUG'
+  $log_level                        = 'WARN'
   $install_dir                      = '/opt/'
   $config_dir                       = '/etc/opt/'
   $group_id                         = 'no.difi.altinn'
@@ -30,9 +30,10 @@ class altinn_gateway::params {
   $altinn_access_scopes             = 'altinn:maskinporten/delegations.admin'
   $server_tomcat_max_threads        = 200
   $server_tomcat_min_spare_threads  = 10
-  $health_details_hide              = false
+  $health_show_details              = 'always'
   $test_tom_liste                   = null
   $test_ikke_tilgjengelig           = null
   $test_mock                        = false
-  $maskinporten_client_kid          = ""
+  $maskinporten_client_kid          = ''
+  $tomcat_tmp_dir                   = '/opt/altinn-gateway/tmp'
 }

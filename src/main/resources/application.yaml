@@ -1,20 +1,15 @@
 # Spring Boot Actuator
 management:
+  health:
+    diskspace:
+      enabled: false
   endpoints:
     web:
-      base-path: /
       exposure:
-        include: "version, info, health"
-  health:
-    defaults:
-      enabled: true
-    jms:
-      enabled: true
-    ldap:
-      enabled: true
-  endpoint:
-    health:
-      show-details: always
+        include: health,info
+      basePath: /
+      path-mapping:
+        info: /version
 
 ## Generic application config
 application:
