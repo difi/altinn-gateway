@@ -19,7 +19,7 @@ class altinn_gateway::params {
   $altinn_keystore_type             = 'JKS'
   $altinn_keystore_filename         = 'difi-virkscert-altinn.jks'
   $altinn_keystore_password         = 'oBr8YZuZsbic4gpP'
-  $altinn_keystore_key_alias        = 'test'
+  $altinn_keystore_key_alias        = 'avsender'
   $altinn_keystore_key_password     = 'oBr8YZuZsbic4gpP'
   $altinn_gateway_basic_username    = 'user'
   $altinn_gateway_basic_password    = 'password'
