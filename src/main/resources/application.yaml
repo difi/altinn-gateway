@@ -30,7 +30,10 @@ spring:
     user:
       name: user
       password: password
-
+  cache:
+    cache-names: delegations
+    caffeine:
+      spec: maximumSize=500, expireAfterWrite=50s
 ## Altinn integration
 altinn:
   #  delegationsEndpoint: http://localhost:9991/altinn-mock/delegations

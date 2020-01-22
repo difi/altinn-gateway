@@ -2,15 +2,17 @@ package no.difi.altinn;
 
 import lombok.extern.slf4j.Slf4j;
 import no.difi.altinn.domain.Delegation;
+import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import javax.cache.annotation.CacheResult;
 import java.net.URI;
 import java.util.List;
 
 @Service
 @Slf4j
+@CacheConfig(cacheNames = {"delegations"})
 public class AltinnService {
     private final AltinnClient client;
 
@@ -18,7 +20,7 @@ public class AltinnService {
         this.client = client;
     }
 
-    @CacheResult(cacheName = "delegations")
+    @Cacheable
     public List<Delegation> getDelegations(String scope, String consumerOrg, String supplierOrg) {
         return client.getDelegations(getUrlWithParameters(scope, consumerOrg, supplierOrg), false);
     }

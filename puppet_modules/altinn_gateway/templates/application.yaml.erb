@@ -54,4 +54,7 @@ spring:
     user:
       name: <%= @altinn_gateway_basic_username %>
       password: <%= @altinn_gateway_basic_password %>
-
+  cache:
+    cache-names: delegations
+    caffeine:
+      spec: maximumSize=<%= @altinn_gateway_cache_max %>,expireAfterWrite=<%= @altinn_gateway_cache_expire_s %>s
