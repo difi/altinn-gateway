@@ -3,8 +3,8 @@ package no.difi.altinn.api;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.HttpStatusCodeException;
@@ -12,18 +12,22 @@ import org.springframework.web.context.request.ServletWebRequest;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ExceptionHandlerExceptionResolver;
 
-import java.io.UnsupportedEncodingException;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
 @Slf4j
-@ControllerAdvice
+@RestControllerAdvice
 public class ExceptionGlobalHandler extends ExceptionHandlerExceptionResolver {
 
     @ExceptionHandler(value = {HttpClientErrorException.class, HttpServerErrorException.class})
-    public ResponseEntity<Map<String, Object>> handleHttpClientExceptionFromAltinn(HttpStatusCodeException ex, WebRequest req) throws UnsupportedEncodingException {
-        return new ResponseEntity<>(HttpStatus.valueOf(ex.getRawStatusCode()));
+    public ResponseEntity handleHttpClientExceptionFromAltinn(HttpStatusCodeException ex, WebRequest req) {
+        if (HttpStatus.BAD_REQUEST == ex.getStatusCode()) {
+            return new ResponseEntity<>(ex.getResponseBodyAsString(), HttpStatus.valueOf(ex.getRawStatusCode()));
+        } else {
+            log.error("Error response from Altinn: " + ex.getRawStatusCode() + " - " + ex.getMessage() + " for request " + req.toString());
+            return new ResponseEntity<>("Altinn-api not available: " + ex.getMessage(), HttpStatus.SERVICE_UNAVAILABLE);
+        }
     }
 
     @ExceptionHandler(value = IllegalArgumentException.class)

@@ -41,10 +41,10 @@ public class AltinnClient {
         HttpEntity<Object> entity = new HttpEntity<>(headers);
 
         try {
-                ResponseEntity<Delegation[]> responseEntity = template.exchange(url, HttpMethod.GET, entity, Delegation[].class);
+            ResponseEntity<Delegation[]> responseEntity = template.exchange(url, HttpMethod.GET, entity, Delegation[].class);
             return Arrays.asList(Objects.requireNonNull(responseEntity.getBody()));
         } catch (HttpClientErrorException e) {
-            if (!isRetry && e.getStatusCode() == HttpStatus.UNAUTHORIZED) {
+            if (!isRetry && HttpStatus.UNAUTHORIZED == e.getStatusCode()) {
                 return getDelegations(url, true);
             } else {
                 throw e;
