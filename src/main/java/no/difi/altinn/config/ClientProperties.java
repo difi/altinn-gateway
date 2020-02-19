@@ -17,6 +17,12 @@ public class ClientProperties {
     @NotNull
     private String serviceEndpoint;
 
+    @NotNull
+    private String authorizationEndpoint;
+
+    @NotNull
+    private String apiKey;
+
     @Valid
     private KeyStoreProperties keystore;
 

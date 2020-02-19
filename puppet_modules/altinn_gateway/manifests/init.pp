@@ -39,6 +39,8 @@ class altinn_gateway (
   Boolean $test_mock                       = $altinn_gateway::params::test_mock,
   String $maskinporten_client_kid          = $altinn_gateway::params::maskinporten_client_kid,
   String $tomcat_tmp_dir                   = $altinn_gateway::params::tomcat_tmp_dir,
+  String $altinn_authorization_endpoint    = $altinn_gateway::params::altinn_authorization_endpoint,
+  String $altinn_api_key                   = $altinn_gateway::params::altinn_api_key
 
 ) inherits altinn_gateway::params {
 

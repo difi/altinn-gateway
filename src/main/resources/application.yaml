@@ -46,16 +46,16 @@ altinn:
     keyAlias: avsender
     keyPassword: oBr8YZuZsbic4gpP
   serviceEndpoint: https://at23.altinn.cloud/maskinporten-api
+  authorizationEndpoint: https://tt02.altinn.no/api/serviceowner/authorization
+  apiKey: 86926452-CE1B-4960-9BA6-7E28D8DE3A53
 
 maskinporten:
-  iss: altinn-gateway
-#  aud: https://eid-systest-web01.dmz.local/maskinporten/
-#  aud: https://maskinporten-test1.difi.eon.no/
-#  tokenEndpoint: https://maskinporten-test1.difi.eon.no/token
-  aud: https://oidc-test1.difi.eon.no/idporten-oidc-provider/
+  iss: altinn_gateway
+  aud: https://test1.maskinporten.no/
   resource: https://tt02.altinn.no/maskinporten-api/
-  tokenEndpoint: https://oidc-test1.difi.eon.no/idporten-oidc-provider/token
+  tokenEndpoint: http://test1.maskinporten.no/token
   scope: altinn:maskinporten/delegations.admin
+  kid:
 
 
 

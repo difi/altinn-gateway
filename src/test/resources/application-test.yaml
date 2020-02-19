@@ -15,6 +15,7 @@ altinn:
     keyAlias: avsender
     keyPassword: oBr8YZuZsbic4gpP
   serviceEndpoint: http://localhost:9991/altinn-mock
+  authorizationEndpoint: http://localhost:9991/altinn-api-mock
 
 maskinporten:
   iss: altinn_gateway

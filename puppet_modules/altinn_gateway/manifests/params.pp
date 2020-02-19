@@ -38,4 +38,6 @@ class altinn_gateway::params {
   $test_mock                        = false
   $maskinporten_client_kid          = ''
   $tomcat_tmp_dir                   = '/opt/altinn-gateway/tmp'
+  $altinn_authorization_endpoint    = 'https://tt02.altinn.no/api/serviceowner/authorization'
+  $altinn_api_key                   = '86926452-CE1B-4960-9BA6-7E28D8DE3A53'
 }

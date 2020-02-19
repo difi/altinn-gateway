@@ -1,0 +1,20 @@
+{
+  "Subject": {
+    "SocialSecurityNumber": "00000000001"
+  },
+  "Reportee": {
+    "OrganizationNumber": "000000002"
+  },
+  "Rights": [
+    {
+      "RightID": 1,
+      "ServiceCode": "5455",
+      "ServiceEditionCode": 1
+    },
+    {
+      "RightID": 2,
+      "ServiceCode": "5456",
+      "ServiceEditionCode": 1
+    }
+  ]
+}

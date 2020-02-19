@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import no.difi.altinn.config.ClientProperties;
 import no.difi.altinn.config.JwtGenerator;
 import no.difi.altinn.domain.Delegation;
+import no.difi.altinn.domain.RightResource;
 import org.springframework.http.*;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
@@ -32,6 +33,10 @@ public class AltinnClient {
         return UriComponentsBuilder.fromUriString(properties.getServiceEndpoint());
     }
 
+    UriComponentsBuilder getAltinnAuthorizationURIBuilder() {
+        return UriComponentsBuilder.fromUriString(properties.getAuthorizationEndpoint());
+    }
+
     List<Delegation> getDelegations(URI url, boolean isRetry) {
         String accessToken;
         accessToken = isRetry ? jwtGenerator.acquireNewAccessToken() : jwtGenerator.acquireAccessToken();
@@ -50,5 +55,13 @@ public class AltinnClient {
                 throw e;
             }
         }
+    }
+
+    RightResource getRights(URI url){
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("ApiKey", properties.getApiKey());
+        HttpEntity<Object> entity = new HttpEntity<>(headers);
+        ResponseEntity<RightResource>  responseEntity = template.exchange(url, HttpMethod.GET, entity, RightResource.class);
+        return responseEntity.getBody();
     }
 }
