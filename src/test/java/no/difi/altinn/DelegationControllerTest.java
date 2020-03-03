@@ -8,8 +8,12 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.util.TestPropertyValues;
+import org.springframework.context.ApplicationContextInitializer;
+import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.ContextConfiguration;
 
 import java.util.List;
 
@@ -20,6 +24,7 @@ import static junit.framework.TestCase.assertNotNull;
 
 @SpringBootTest
 @ActiveProfiles("test")
+@ContextConfiguration(initializers = DelegationControllerTest.ConfigurationInitializer.class)
 public class DelegationControllerTest {
 
     static WireMockServer wireMockServer;
@@ -133,4 +138,12 @@ public class DelegationControllerTest {
         verify(getRequestedFor(urlEqualTo(testUrl)));
     }
 
+    public static class ConfigurationInitializer implements ApplicationContextInitializer<ConfigurableApplicationContext> {
+
+        @Override
+        public void initialize(ConfigurableApplicationContext configurableApplicationContext) {
+            TestPropertyValues.of("test.mock.enabled=false")
+                    .applyTo(configurableApplicationContext.getEnvironment());
+        }
+    }
 }

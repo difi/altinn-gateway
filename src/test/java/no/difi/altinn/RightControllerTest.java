@@ -15,8 +15,7 @@ import java.util.Set;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig;
-import static junit.framework.TestCase.assertEquals;
-import static junit.framework.TestCase.assertNotNull;
+import static junit.framework.TestCase.*;
 
 @SpringBootTest
 @ActiveProfiles("test")
@@ -61,6 +60,15 @@ public class RightControllerTest {
         assertEquals(serviceCodes, body.getServiceCodes());
 
         verify(getRequestedFor(urlEqualTo(testUrl)));
+    }
+
+    @Test
+    public void testMock() {
+        ResponseEntity<RightResponse> roles = rightController.getRoles("06045000883", "8794546");
+        assertNotNull(roles.getBody());
+        assertEquals(2, roles.getBody().getServiceCodes().size());
+        assertTrue(roles.getBody().getServiceCodes().contains("1234"));
+        assertTrue(roles.getBody().getServiceCodes().contains("2456"));
     }
 
 }

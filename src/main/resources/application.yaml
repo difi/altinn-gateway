@@ -22,6 +22,9 @@ test:
   blacklist:
     404: tom-liste
     503: ikke-tilgjengelig
+  rights:
+    serviceCodes: 1234, 2456
+    pidServiceCodes: "06045000883"
   mock:
     enabled: false
 
