@@ -38,8 +38,8 @@ public class RightControllerTest {
 
     @Test
     public void getRoles() {
-        String ssn = "00000000001";
-        String orgNumber = "000000002";
+        String ssn = "30045002388";
+        String orgNumber = "910027913";
         String testUrl = "/altinn-api-mock/rights?subject="+ssn+"&reportee="+orgNumber+"&ForceEIAuthentication=";
 
         configureFor("localhost", 9991);
@@ -64,7 +64,7 @@ public class RightControllerTest {
 
     @Test
     public void testMock() {
-        ResponseEntity<RightResponse> roles = rightController.getRoles("06045000883", "8794546");
+        ResponseEntity<RightResponse> roles = rightController.getRoles("06045000883", "910027913");
         assertNotNull(roles.getBody());
         assertEquals(2, roles.getBody().getServiceCodes().size());
         assertTrue(roles.getBody().getServiceCodes().contains("1234"));

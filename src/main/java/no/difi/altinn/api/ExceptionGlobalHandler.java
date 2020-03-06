@@ -23,7 +23,8 @@ public class ExceptionGlobalHandler extends ExceptionHandlerExceptionResolver {
     @ExceptionHandler(value = {HttpClientErrorException.class, HttpServerErrorException.class})
     public ResponseEntity handleHttpClientExceptionFromAltinn(HttpStatusCodeException ex, WebRequest req) {
         if (HttpStatus.BAD_REQUEST == ex.getStatusCode()) {
-            return new ResponseEntity<>(ex.getResponseBodyAsString(), HttpStatus.valueOf(ex.getRawStatusCode()));
+            String response = ex.getResponseBodyAsString() == null ? ex.getResponseBodyAsString() : ex.getStatusText();
+            return new ResponseEntity<>(response, HttpStatus.valueOf(ex.getRawStatusCode()));
         } else {
             log.error("Error response from Altinn: " + ex.getRawStatusCode() + " - " + ex.getMessage() + " for request " + req.toString());
             return new ResponseEntity<>("Altinn-api not available: " + ex.getMessage(), HttpStatus.SERVICE_UNAVAILABLE);
@@ -40,6 +41,5 @@ public class ExceptionGlobalHandler extends ExceptionHandlerExceptionResolver {
         errorMap.put("path", ((ServletWebRequest) req).getRequest().getRequestURI());
         return new ResponseEntity<>(errorMap, HttpStatus.BAD_REQUEST);
     }
-
 
 }

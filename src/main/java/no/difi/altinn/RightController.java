@@ -7,7 +7,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-
+import no.difi.validation.constraints.Ssn;
+import no.difi.validation.constraints.Orgnr;
 import java.util.Set;
 
 @Controller
@@ -31,13 +32,15 @@ public class RightController {
     }
 
     @GetMapping
-    public ResponseEntity<RightResponse> getRoles(@RequestParam(value = "person_identificator") String personIdentificator,
-                                                  @RequestParam(value = "organization_number") String organizationNumber){
+    public ResponseEntity getRoles(@RequestParam(value = "person_identificator") @Ssn String personIdentificator,
+                                   @RequestParam(value = "organization_number") @Orgnr String organizationNumber){
+
         if (mockEnabled && personIdentificator.equals(pidServiceCodes)) {
             return getMockServiceCodes(personIdentificator, organizationNumber);
         } else {
             return ResponseEntity.ok(RightResponse.fromRightWrapper(altinnService.getRights(personIdentificator, organizationNumber)));
         }
+
     }
 
     private ResponseEntity<RightResponse> getMockServiceCodes(String personIdentificator, String organizationNumber) {
@@ -46,5 +49,6 @@ public class RightController {
                 .organizationNumber(organizationNumber)
                 .serviceCodes(blackListEmptyListScope)
                 .build());
+
     }
 }
