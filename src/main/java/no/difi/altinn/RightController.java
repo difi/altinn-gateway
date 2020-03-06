@@ -35,7 +35,7 @@ public class RightController {
     public ResponseEntity getRoles(@RequestParam(value = "person_identificator") @Ssn String personIdentificator,
                                    @RequestParam(value = "organization_number") @Orgnr String organizationNumber){
 
-        if (mockEnabled && personIdentificator.equals(pidServiceCodes)) {
+        if (mockEnabled && personIdentificator.equals(pidServiceCodes)) { 
             return getMockServiceCodes(personIdentificator, organizationNumber);
         } else {
             return ResponseEntity.ok(RightResponse.fromRightWrapper(altinnService.getRights(personIdentificator, organizationNumber)));
