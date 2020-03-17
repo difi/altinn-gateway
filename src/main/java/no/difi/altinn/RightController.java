@@ -1,14 +1,15 @@
 package no.difi.altinn;
 
 import lombok.extern.slf4j.Slf4j;
+import no.difi.validation.OrgnrValidator;
+import no.difi.validation.SsnValidator;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import no.difi.validation.constraints.Ssn;
-import no.difi.validation.constraints.Orgnr;
 import java.util.Set;
 
 @Controller
@@ -32,8 +33,16 @@ public class RightController {
     }
 
     @GetMapping
-    public ResponseEntity getRoles(@RequestParam(value = "person_identificator") @Ssn String personIdentificator,
-                                   @RequestParam(value = "organization_number") @Orgnr String organizationNumber){
+    public ResponseEntity getRoles(@RequestParam(value = "person_identificator") String personIdentificator,
+                                   @RequestParam(value = "organization_number") String organizationNumber){
+
+        if(!SsnValidator.isValid(personIdentificator)) {
+            return new ResponseEntity<>("ugyldig personidentifikator", HttpStatus.BAD_REQUEST);
+        }
+
+        if(!OrgnrValidator.isValid((organizationNumber))) {
+            return new ResponseEntity<>("ugyldig organisasjonsnummer", HttpStatus.BAD_REQUEST);
+        }
 
         if (mockEnabled && personIdentificator.equals(pidServiceCodes)) { 
             return getMockServiceCodes(personIdentificator, organizationNumber);
