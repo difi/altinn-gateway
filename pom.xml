@@ -21,6 +21,7 @@
         <eid.common.version>2020-03-03-1349-e7fabdb</eid.common.version>
         <artifactory.url>http://eid-artifactory.dmz.local:8080/artifactory</artifactory.url>
         <apache.commons-beanutils>1.9.4</apache.commons-beanutils>
+        <eid.common.resilience.version>2019-06-27-1212-079df00</eid.common.resilience.version>
     </properties>
 
     <dependencies>
@@ -137,6 +138,33 @@
             <groupId>commons-beanutils</groupId>
             <artifactId>commons-beanutils</artifactId>
             <version>${apache.commons-beanutils}</version>
+        </dependency>
+        <dependency>
+            <groupId>no.difi.common</groupId>
+            <artifactId>resilience-util</artifactId>
+            <version>${eid.common.resilience.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>no.difi.common</groupId>
+            <artifactId>resilience-util-spring-boot-2</artifactId>
+            <version>${eid.common.resilience.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.github.tomakehurst</groupId>
+            <artifactId>wiremock</artifactId>
+            <version>2.25.1</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>no.difi.common</groupId>
+            <artifactId>idporten-lib-logging</artifactId>
+            <version>${eid.common.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.apache.activemq</groupId>
+                    <artifactId>activemq-client</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
     </dependencies>
 

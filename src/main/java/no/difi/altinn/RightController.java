@@ -10,6 +10,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+
 import java.util.Set;
 
 @Controller
@@ -37,10 +38,12 @@ public class RightController {
                                    @RequestParam(value = "organization_number") String organizationNumber){
 
         if(!SsnValidator.isValid(personIdentificator)) {
+            log.warn("pid: "+personIdentificator+", ugyldig personidentifikator");
             return new ResponseEntity<>("ugyldig personidentifikator", HttpStatus.BAD_REQUEST);
         }
 
         if(!OrgnrValidator.isValid((organizationNumber))) {
+            log.warn("orgnr: "+organizationNumber+", ugyldig organisasjonsnummer");
             return new ResponseEntity<>("ugyldig organisasjonsnummer", HttpStatus.BAD_REQUEST);
         }
 

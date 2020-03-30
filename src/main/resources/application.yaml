@@ -17,6 +17,7 @@ application:
     audit:
       dir: c:/var/log/altinn-gateway
       file: audit.log
+      dataSeparator: "|"
 
 test:
   blacklist:

@@ -57,11 +57,10 @@ public class AltinnClient {
         }
     }
 
-    RightResource getRights(URI url){
+    ResponseEntity<RightResource> getRights(URI url){
         HttpHeaders headers = new HttpHeaders();
         headers.set("ApiKey", properties.getApiKey());
         HttpEntity<Object> entity = new HttpEntity<>(headers);
-        ResponseEntity<RightResource>  responseEntity = template.exchange(url, HttpMethod.GET, entity, RightResource.class);
-        return responseEntity.getBody();
+        return template.exchange(url, HttpMethod.GET, entity, RightResource.class);
     }
 }

@@ -1,10 +1,13 @@
 package no.difi.altinn;
 
 import lombok.extern.slf4j.Slf4j;
+import no.difi.altinn.audit.AuditLog;
 import no.difi.altinn.domain.Delegation;
 import no.difi.altinn.domain.RightResource;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -16,9 +19,11 @@ import java.util.List;
 @CacheConfig(cacheNames = {"delegations"})
 public class AltinnService {
     private final AltinnClient client;
+    private final AuditLog auditLog;
 
-    public AltinnService(AltinnClient client) {
+    public AltinnService(AltinnClient client, AuditLog auditLog) {
         this.client = client;
+        this.auditLog = auditLog;
     }
 
     @Cacheable
@@ -27,7 +32,12 @@ public class AltinnService {
     }
 
     public RightResource getRights(String subject, String reportee){
-        return client.getRights(getRightsUri(subject, reportee));
+        ResponseEntity<RightResource> responseEntity = client.getRights(getRightsUri(subject, reportee));
+        if(responseEntity.getStatusCode() == HttpStatus.OK) {
+            auditLog.rightLookup(subject, reportee);
+        }
+
+        return responseEntity.getBody();
     }
 
     URI getUrlWithParameters(String scope, String consumerOrg, String supplierOrg) {
