@@ -60,29 +60,6 @@ public class AltinnGwMvcTest {
     }
 
     @Test
-    public void inputErrorShouldReturn400WithSameError() throws Exception {
-        final String scope = "skatteetaten:tdites";
-        final String consumerOrg = "910027913";
-        final String supplierOrg = "123";
-        AltinnError error = AltinnError.builder()
-                .code(40050)
-                .description("Reportee 123 not found.")
-                .build();
-        ObjectMapper mapper = new ObjectMapper();
-        HttpClientErrorException errorException = new HttpClientErrorException(HttpStatus.BAD_REQUEST, HttpStatus.BAD_REQUEST.getReasonPhrase(), mapper.writeValueAsString(error).getBytes(), Charset.defaultCharset());
-        given(altinnService.getDelegations(scope, consumerOrg, supplierOrg)).willThrow(errorException);
-
-        ResultActions result = mvc.perform(get("/delegations")
-                .param("scope", scope)
-                .param("consumer_org", consumerOrg)
-                .param("supplier_org", supplierOrg)
-                .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.error_code", is(error.getCode())))
-                .andExpect(jsonPath("$.error_description", is(error.getDescription())));
-    }
-
-    @Test
     public void notFoundErrorShouldReturn503() throws Exception {
         final String scope = "skatteetaten:tdites";
         final String consumerOrg = "910027913";

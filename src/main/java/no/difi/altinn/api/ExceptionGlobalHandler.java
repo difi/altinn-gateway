@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import no.difi.resilience.annotation.DisableResilient;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.client.HttpClientErrorException;
@@ -43,6 +44,13 @@ public class ExceptionGlobalHandler extends ExceptionHandlerExceptionResolver {
         errorMap.put("message", ex.getMessage());
         errorMap.put("path", ((ServletWebRequest) req).getRequest().getRequestURI());
         return new ResponseEntity<>(errorMap, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(MissingServletRequestParameterException.class)
+    @DisableResilient
+    public ResponseEntity handleMissingParams(MissingServletRequestParameterException ex, WebRequest req) {
+        log.error("Error: " + ex.getMessage() + " for request " + req.toString());
+        return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
     }
 
 }
