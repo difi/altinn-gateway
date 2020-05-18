@@ -9,7 +9,7 @@ import com.nimbusds.jose.util.Base64;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
 import lombok.extern.slf4j.Slf4j;
-import no.difi.altinn.security.KeyStoreProvider;
+import no.difi.altinn.security.KeyProvider;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -17,8 +17,6 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
-import java.security.*;
-import java.security.cert.Certificate;
 import java.time.Clock;
 import java.util.ArrayList;
 import java.util.Date;
@@ -35,10 +33,13 @@ public class JwtGenerator {
 
     private String currentAccessToken;
 
-    public JwtGenerator(JwkProperties properties, ClientProperties clientProperties, RestTemplate restTemplate) {
+    private KeyProvider keyProvider;
+
+    public JwtGenerator(JwkProperties properties, ClientProperties clientProperties, RestTemplate restTemplate, KeyProvider keyProvider) {
         this.properties = properties;
         this.clientProperties = clientProperties;
         this.restTemplate = restTemplate;
+        this.keyProvider = keyProvider;
     }
 
     public String acquireAccessToken() {
@@ -60,7 +61,7 @@ public class JwtGenerator {
             JWSHeader jwtHeader;
             if (Strings.isNullOrEmpty(properties.getKid())) {
                 List<Base64> certChain = new ArrayList<>();
-                certChain.add(Base64.encode(getCertificateFromKeystore().getEncoded()));
+                certChain.add(Base64.encode(keyProvider.certificate().getEncoded()));
                 jwtHeader = new JWSHeader.Builder(JWSAlgorithm.RS256).x509CertChain(certChain).build();
             }else {
                 jwtHeader = new JWSHeader.Builder(JWSAlgorithm.RS256).keyID(properties.getKid()).build();
@@ -74,7 +75,7 @@ public class JwtGenerator {
                     .issueTime(new Date(Clock.systemUTC().millis()))
                     .expirationTime(new Date(Clock.systemUTC().millis() + 120000)) // Expiration time is 120 sec.
                     .build();
-            JWSSigner signer = new RSASSASigner(getPrivateKeyFromKeystore());
+            JWSSigner signer = new RSASSASigner(keyProvider.privateKey());
             SignedJWT signedJWT = new SignedJWT(jwtHeader, claims);
             signedJWT.sign(signer);
 
@@ -83,18 +84,6 @@ public class JwtGenerator {
             log.error("Couldn't create JWT " + e.getMessage());
             throw new RuntimeException(e);
         }
-    }
-
-    private Certificate getCertificateFromKeystore() throws KeyStoreException {
-        final ClientProperties.KeyStoreProperties keyProperties = clientProperties.getKeystore();
-        KeyStore keyStore = KeyStoreProvider.from(keyProperties).getKeyStore();
-        return keyStore.getCertificate(clientProperties.getKeystore().getKeyAlias());
-    }
-
-    private PrivateKey getPrivateKeyFromKeystore() throws KeyStoreException, UnrecoverableKeyException, NoSuchAlgorithmException {
-        final ClientProperties.KeyStoreProperties keyProperties = clientProperties.getKeystore();
-        KeyStore keyStore = KeyStoreProvider.from(keyProperties).getKeyStore();
-        return (PrivateKey) keyStore.getKey(clientProperties.getKeystore().getKeyAlias(), clientProperties.getKeystore().getKeyPassword().toCharArray()); // Read from KeyStore
     }
 
     private TokenResponse callTokenEndpoint(String tokenEndpoint, String assertion)  {

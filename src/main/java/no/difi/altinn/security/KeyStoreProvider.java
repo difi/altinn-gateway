@@ -19,9 +19,8 @@ public class KeyStoreProvider {
     }
 
     private static KeyStore loadKeyStore(ClientProperties.KeyStoreProperties properties) {
-        try {
+        try (InputStream stream = properties.getPath().getInputStream()) {
             KeyStore store = KeyStore.getInstance(properties.getType());
-            InputStream stream = properties.getPath().getInputStream();
             store.load(stream, properties.getPassword().toCharArray());
             return store;
         } catch (Exception e) {

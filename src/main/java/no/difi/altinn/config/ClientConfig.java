@@ -2,6 +2,7 @@ package no.difi.altinn.config;
 
 import lombok.extern.slf4j.Slf4j;
 import no.difi.altinn.AltinnClient;
+import no.difi.altinn.security.KeyProvider;
 import no.difi.altinn.security.KeyStoreProvider;
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
 import org.apache.http.impl.client.CloseableHttpClient;
@@ -24,18 +25,17 @@ import java.security.KeyStore;
 public class ClientConfig {
 
     @Bean
-    public AltinnClient altinnClient(ClientProperties clientProperties, JwkProperties jwkProperties) {
+    public AltinnClient altinnClient(ClientProperties clientProperties, JwtGenerator jwtGenerator) {
         CloseableHttpClient httpClient = getCloseableHttpClient(clientProperties);
         HttpComponentsClientHttpRequestFactory requestFactory = new HttpComponentsClientHttpRequestFactory();
         requestFactory.setHttpClient(httpClient);
         RestTemplate restTemplate = new RestTemplate(requestFactory);
-        JwtGenerator jwtGenerator = jwtGenerator(jwkProperties, clientProperties, restTemplate);
         return new AltinnClient(clientProperties, restTemplate, jwtGenerator);
     }
 
     @Bean
-    public JwtGenerator jwtGenerator(JwkProperties jwkProperties, ClientProperties clientProperties, RestTemplate restTemplate) {
-        return new JwtGenerator(jwkProperties, clientProperties, restTemplate);
+    public JwtGenerator jwtGenerator(JwkProperties jwkProperties, ClientProperties clientProperties, RestTemplate restTemplate, KeyProvider keyProvider) {
+        return new JwtGenerator(jwkProperties, clientProperties, restTemplate, keyProvider);
     }
 
     @Bean
@@ -62,6 +62,13 @@ public class ClientConfig {
         } catch (GeneralSecurityException e) {
             throw new IllegalStateException("Could not load keystore", e);
         }
+    }
+
+    @Bean
+    public KeyProvider keyProvider(ClientProperties properties) {
+        final ClientProperties.KeyStoreProperties keyProperties = properties.getKeystore();
+        KeyStore keyStore = KeyStoreProvider.from(keyProperties).getKeyStore();
+        return new KeyProvider(keyStore, keyProperties.getKeyAlias(), keyProperties.getKeyPassword());
     }
 
 
