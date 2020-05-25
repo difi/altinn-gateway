@@ -22,6 +22,7 @@
         <artifactory.url>http://eid-artifactory.dmz.local:8080/artifactory</artifactory.url>
         <apache.commons-beanutils>1.9.4</apache.commons-beanutils>
         <eid.common.resilience.version>2019-06-27-1212-079df00</eid.common.resilience.version>
+        <springfox-swagger2.version>2.9.2</springfox-swagger2.version>
     </properties>
 
     <dependencies>
@@ -166,6 +167,19 @@
                 </exclusion>
             </exclusions>
         </dependency>
+
+        <!-- Swagger -->
+        <dependency>
+            <groupId>io.springfox</groupId>
+            <artifactId>springfox-swagger2</artifactId>
+            <version>${springfox-swagger2.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.springfox</groupId>
+            <artifactId>springfox-swagger-ui</artifactId>
+            <version>${springfox-swagger2.version}</version>
+        </dependency>
+
     </dependencies>
 
     <build>

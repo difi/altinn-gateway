@@ -1,5 +1,7 @@
 package no.difi.altinn;
 
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import lombok.extern.slf4j.Slf4j;
 import no.difi.validation.OrgnrValidator;
 import no.difi.validation.SsnValidator;
@@ -34,8 +36,9 @@ public class RightController {
     }
 
     @GetMapping
-    public ResponseEntity getRoles(@RequestParam(value = "person_identificator") String personIdentificator,
-                                   @RequestParam(value = "organization_number") String organizationNumber){
+    @ApiOperation(value = "Rettigheter registrert i Altinn for en person i kontekst av en organisasjon.")
+    public ResponseEntity getRoles(@ApiParam(value = "Personidentifikator") @RequestParam(value = "person_identificator") String personIdentificator,
+                                   @ApiParam(value = "Organisasjonsnummer") @RequestParam(value = "organization_number") String organizationNumber){
 
         if(!SsnValidator.isValid(personIdentificator)) {
             log.warn("pid: "+personIdentificator+", ugyldig personidentifikator");
@@ -47,7 +50,7 @@ public class RightController {
             return new ResponseEntity<>("ugyldig organisasjonsnummer", HttpStatus.BAD_REQUEST);
         }
 
-        if (mockEnabled && personIdentificator.equals(pidServiceCodes)) { 
+        if (mockEnabled && personIdentificator.equals(pidServiceCodes)) {
             return getMockServiceCodes(personIdentificator, organizationNumber);
         } else {
             return ResponseEntity.ok(RightResponse.fromRightWrapper(altinnService.getRights(personIdentificator, organizationNumber)));

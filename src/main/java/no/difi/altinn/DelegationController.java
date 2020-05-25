@@ -1,5 +1,7 @@
 package no.difi.altinn;
 
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import lombok.extern.slf4j.Slf4j;
 import no.difi.altinn.domain.Delegation;
 import org.springframework.beans.factory.annotation.Value;
@@ -35,9 +37,10 @@ public class DelegationController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Delegation>> getDelegations(@RequestParam(name = "scope") String scope,
-                                                           @RequestParam(name = "consumer_org", required = false) String consumerOrg,
-                                                           @RequestParam(name = "supplier_org", required = false) String supplierOrg) {
+    @ApiOperation(value = "Delegeringer fra en sluttbruker, for eksempel en kommune, til en tjenesteleverandør registrert i Altinn.")
+    public ResponseEntity<List<Delegation>> getDelegations(@ApiParam(value = "Scope") @RequestParam(name = "scope") String scope,
+                                                           @ApiParam(value = "Konsumentens organisasjonsnummer") @RequestParam(name = "consumer_org", required = false) String consumerOrg,
+                                                           @ApiParam(value = "Leverandørens organisasjonsnummer") @RequestParam(name = "supplier_org", required = false) String supplierOrg) {
         if (mockEnabled) {
             return getMockDelegations(scope, consumerOrg, supplierOrg);
         } else {
