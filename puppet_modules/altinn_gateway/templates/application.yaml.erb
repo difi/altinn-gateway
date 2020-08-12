@@ -28,7 +28,13 @@ altinn:
   serviceEndpoint: <%= @altinn_url %>
   #connectTimeout: <%= @connect_timeout %>
   #readTimeout: <%= @read_timeout %>
-  keystore:
+  rights-keystore:
+    type: <%= @altinn_rights_keystore_type  %>
+    path: file:<%= @config_dir %><%= @application %>/config/<%= @altinn_rights_keystore_filename %>
+    password: <%= @altinn_rights_keystore_password %>
+    keyAlias: <%= @altinn_rights_keystore_key_alias %>
+    keyPassword: <%= @altinn_rights_keystore_key_password %>
+  delegations-keystore:
     type: <%= @altinn_keystore_type  %>
     path: file:<%= @config_dir %><%= @application %>/config/<%= @altinn_keystore_filename %>
     password: <%= @altinn_keystore_password %>

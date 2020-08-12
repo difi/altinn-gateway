@@ -27,17 +27,14 @@ import java.util.UUID;
 public class JwtGenerator {
     private JwkProperties properties;
 
-    private ClientProperties clientProperties;
-
     private RestTemplate restTemplate;
 
     private String currentAccessToken;
 
     private KeyProvider keyProvider;
 
-    public JwtGenerator(JwkProperties properties, ClientProperties clientProperties, RestTemplate restTemplate, KeyProvider keyProvider) {
+    public JwtGenerator(JwkProperties properties, RestTemplate restTemplate, KeyProvider keyProvider) {
         this.properties = properties;
-        this.clientProperties = clientProperties;
         this.restTemplate = restTemplate;
         this.keyProvider = keyProvider;
     }

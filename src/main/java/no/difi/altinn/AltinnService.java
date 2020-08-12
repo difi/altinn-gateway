@@ -18,21 +18,23 @@ import java.util.List;
 @Slf4j
 @CacheConfig(cacheNames = {"delegations"})
 public class AltinnService {
-    private final AltinnClient client;
+    private final AltinnDelegationsClient delegationsClient;
+    private final AltinnRightsClient rightsClient;
     private final AuditLog auditLog;
 
-    public AltinnService(AltinnClient client, AuditLog auditLog) {
-        this.client = client;
+    public AltinnService(AltinnRightsClient rightsClient, AltinnDelegationsClient delegationsClient, AuditLog auditLog) {
+        this.rightsClient = rightsClient;
+        this.delegationsClient = delegationsClient;
         this.auditLog = auditLog;
     }
 
     @Cacheable
     public List<Delegation> getDelegations(String scope, String consumerOrg, String supplierOrg) {
-        return client.getDelegations(getUrlWithParameters(scope, consumerOrg, supplierOrg), false);
+        return delegationsClient.getDelegations(getUrlWithParameters(scope, consumerOrg, supplierOrg), false);
     }
 
     public RightResource getRights(String subject, String reportee){
-        ResponseEntity<RightResource> responseEntity = client.getRights(getRightsUri(subject, reportee));
+        ResponseEntity<RightResource> responseEntity = rightsClient.getRights(getRightsUri(subject, reportee));
         if(responseEntity.getStatusCode() == HttpStatus.OK) {
             auditLog.rightLookup(subject, reportee);
         }
@@ -41,7 +43,7 @@ public class AltinnService {
     }
 
     URI getUrlWithParameters(String scope, String consumerOrg, String supplierOrg) {
-        UriComponentsBuilder builder = client.getAltinnURIBuilder()
+        UriComponentsBuilder builder = delegationsClient.getAltinnURIBuilder()
                 .pathSegment("delegations")
                 .queryParam("scope", scope);
         if (consumerOrg != null) {
@@ -54,7 +56,7 @@ public class AltinnService {
     }
 
     URI getRightsUri(String subject, String reportee){
-        UriComponentsBuilder builder = client.getAltinnAuthorizationURIBuilder()
+        UriComponentsBuilder builder = rightsClient.getAltinnAuthorizationURIBuilder()
                 .pathSegment("rights")
                 .queryParam("subject", subject)
                 .queryParam("reportee", reportee)

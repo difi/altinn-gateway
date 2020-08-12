@@ -17,13 +17,13 @@ import java.util.List;
 import java.util.Objects;
 
 @Slf4j
-public class AltinnClient {
+public class AltinnDelegationsClient {
 
     private final ClientProperties properties;
     private final RestTemplate template;
     private final JwtGenerator jwtGenerator;
 
-    public AltinnClient(ClientProperties properties, RestTemplate template, JwtGenerator jwtGenerator) {
+    public AltinnDelegationsClient(ClientProperties properties, RestTemplate template, JwtGenerator jwtGenerator) {
         this.properties = properties;
         this.template = template;
         this.jwtGenerator = jwtGenerator;
@@ -31,10 +31,6 @@ public class AltinnClient {
 
     UriComponentsBuilder getAltinnURIBuilder() {
         return UriComponentsBuilder.fromUriString(properties.getServiceEndpoint());
-    }
-
-    UriComponentsBuilder getAltinnAuthorizationURIBuilder() {
-        return UriComponentsBuilder.fromUriString(properties.getAuthorizationEndpoint());
     }
 
     List<Delegation> getDelegations(URI url, boolean isRetry) {
@@ -57,10 +53,4 @@ public class AltinnClient {
         }
     }
 
-    ResponseEntity<RightResource> getRights(URI url){
-        HttpHeaders headers = new HttpHeaders();
-        headers.set("ApiKey", properties.getApiKey());
-        HttpEntity<Object> entity = new HttpEntity<>(headers);
-        return template.exchange(url, HttpMethod.GET, entity, RightResource.class);
-    }
 }
