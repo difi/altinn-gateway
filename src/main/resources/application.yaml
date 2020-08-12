@@ -43,7 +43,13 @@ altinn:
   #  delegationsEndpoint: http://localhost:9991/altinn-mock/delegations
 #  connectTimeout: <%= @connect_timeout %>
 #  readTimeout: <%= @read_timeout %>
-  keystore:
+  rights-keystore:
+    type: JKS
+    path: classpath:difi-testsertifikat.jks
+    password: oBr8YZuZsbic4gpP
+    keyAlias: avsender
+    keyPassword: oBr8YZuZsbic4gpP
+  delegations-keystore:
     type: JKS
     path: classpath:difi-testsertifikat.jks
     password: oBr8YZuZsbic4gpP

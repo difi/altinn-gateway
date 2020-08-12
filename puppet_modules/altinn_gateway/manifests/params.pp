@@ -16,6 +16,11 @@ class altinn_gateway::params {
   $read_timeout                     = 10000
   $altinn_url                       = 'https://at23.altinn.cloud/maskinporten-api'
   $altinn_escape_scopenames         = false
+  $altinn_rights_keystore_type             = 'JKS'
+  $altinn_rights_keystore_filename         = 'difi-virkscert-altinn.jks'
+  $altinn_rights_keystore_password         = 'oBr8YZuZsbic4gpP'
+  $altinn_rights_keystore_key_alias        = 'avsender'
+  $altinn_rights_keystore_key_password     = 'oBr8YZuZsbic4gpP'
   $altinn_keystore_type             = 'JKS'
   $altinn_keystore_filename         = 'difi-virkscert-altinn.jks'
   $altinn_keystore_password         = 'oBr8YZuZsbic4gpP'

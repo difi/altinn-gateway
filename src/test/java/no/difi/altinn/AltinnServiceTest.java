@@ -20,7 +20,10 @@ import static org.mockito.Mockito.*;
 public class AltinnServiceTest {
 
     @Mock
-    private AltinnClient altinnClient;
+    private AltinnRightsClient altinnRightsClient;
+
+    @Mock
+    private AltinnDelegationsClient altinnDelegationsClient;
 
     @Mock
     private AuditLog auditLog;
@@ -30,55 +33,55 @@ public class AltinnServiceTest {
 
     @Before
     public void setup() {
-        when(altinnClient.getAltinnURIBuilder()).thenReturn(UriComponentsBuilder.fromUriString(mockServiceEndpoint));
+        when(altinnDelegationsClient.getAltinnURIBuilder()).thenReturn(UriComponentsBuilder.fromUriString(mockServiceEndpoint));
     }
 
     @Test
     void getDelegations() throws URISyntaxException {
-        AltinnService altinnService = new AltinnService(altinnClient, auditLog);
-        when(altinnClient.getAltinnURIBuilder()).thenReturn(UriComponentsBuilder.fromUriString(mockServiceEndpoint));
+        AltinnService altinnService = new AltinnService(altinnRightsClient, altinnDelegationsClient, auditLog);
+        when(altinnDelegationsClient.getAltinnURIBuilder()).thenReturn(UriComponentsBuilder.fromUriString(mockServiceEndpoint));
         String scope = "difi:myScope";
         String[] scopes = new String[]{scope};
         URI expectedUrl = new URI(mockServiceEndpoint + "/delegations?scope=difi:myScope");
         Delegation delegation = Delegation.builder().scopes(scopes).build();
-        when(altinnClient.getDelegations(expectedUrl, false)).thenReturn(Collections.singletonList(delegation));
+        when(altinnDelegationsClient.getDelegations(expectedUrl, false)).thenReturn(Collections.singletonList(delegation));
         altinnService.getDelegations(scope, null, null);
-        verify(altinnClient, times(1)).getDelegations(expectedUrl, false);
+        verify(altinnDelegationsClient, times(1)).getDelegations(expectedUrl, false);
     }
 
     @Test
     void testCache() throws URISyntaxException {
-        AltinnService altinnService = new AltinnService(altinnClient, auditLog);
-        when(altinnClient.getAltinnURIBuilder()).thenReturn(UriComponentsBuilder.fromUriString(mockServiceEndpoint));
+        AltinnService altinnService = new AltinnService(altinnRightsClient, altinnDelegationsClient, auditLog);
+        when(altinnDelegationsClient.getAltinnURIBuilder()).thenReturn(UriComponentsBuilder.fromUriString(mockServiceEndpoint));
         String scope = "difi:myScope";
         String[] scopes = new String[]{scope};
         URI expectedUrl = new URI(mockServiceEndpoint + "/delegations?scope=difi:myScope&consumerOrg=1234&supplierOrg=5678");
         Delegation delegation = Delegation.builder().scopes(scopes).build();
-        when(altinnClient.getDelegations(expectedUrl, false)).thenReturn(Collections.singletonList(delegation));
+        when(altinnDelegationsClient.getDelegations(expectedUrl, false)).thenReturn(Collections.singletonList(delegation));
         altinnService.getDelegations(scope, "1234", "5678");
         altinnService.getDelegations(scope, "1234", "5678");
-        verify(altinnClient, times(1)).getDelegations(expectedUrl, false);
+        verify(altinnDelegationsClient, times(1)).getDelegations(expectedUrl, false);
     }
 
     @Test
     void testUrlBuilderMethod() {
-        AltinnService altinnService = new AltinnService(altinnClient, auditLog);
-        when(altinnClient.getAltinnURIBuilder()).thenReturn(UriComponentsBuilder.fromUriString(mockServiceEndpoint));
+        AltinnService altinnService = new AltinnService(altinnRightsClient, altinnDelegationsClient, auditLog);
+        when(altinnDelegationsClient.getAltinnURIBuilder()).thenReturn(UriComponentsBuilder.fromUriString(mockServiceEndpoint));
         URI url = altinnService.getUrlWithParameters("difi:myScope", "1234", "5678");
         assertEquals(mockServiceEndpoint + "/delegations?scope=difi:myScope&consumerOrg=1234&supplierOrg=5678", url.toString());
     }
 
     @Test
     void testRightsUriMethod() {
-        AltinnService altinnService = new AltinnService(altinnClient, auditLog);
-        when(altinnClient.getAltinnAuthorizationURIBuilder()).thenReturn(UriComponentsBuilder.fromUriString(mockAuthorizationEndpoint));
+        AltinnService altinnService = new AltinnService(altinnRightsClient, altinnDelegationsClient, auditLog);
+        when(altinnRightsClient.getAltinnAuthorizationURIBuilder()).thenReturn(UriComponentsBuilder.fromUriString(mockAuthorizationEndpoint));
         URI url = altinnService.getRightsUri("30045002388", "910027913");
         assertEquals(mockAuthorizationEndpoint + "/rights?subject=30045002388&reportee=910027913&ForceEIAuthentication=", url.toString());
     }
 
     @Test
     void getRights() throws URISyntaxException {
-        AltinnService altinnService = new AltinnService(altinnClient, auditLog);
+        AltinnService altinnService = new AltinnService(altinnRightsClient, altinnDelegationsClient, auditLog);
 
         String ssn = "00000000001";
         String orgNumber = "000000002";
@@ -89,11 +92,11 @@ public class AltinnServiceTest {
 
         RightResource rightResource = RightResource.builder().subject(subject).reportee(reportee).rights(Collections.singletonList(right)).build();
 
-        when(altinnClient.getRights(expectedUrl)).thenReturn(ResponseEntity.ok().body(rightResource));
-        when(altinnClient.getAltinnAuthorizationURIBuilder()).thenReturn(UriComponentsBuilder.fromUriString(mockAuthorizationEndpoint));
+        when(altinnRightsClient.getRights(expectedUrl)).thenReturn(ResponseEntity.ok().body(rightResource));
+        when(altinnRightsClient.getAltinnAuthorizationURIBuilder()).thenReturn(UriComponentsBuilder.fromUriString(mockAuthorizationEndpoint));
 
         altinnService.getRights(ssn, orgNumber);
-        verify(altinnClient, times(1)).getRights(expectedUrl);
+        verify(altinnRightsClient, times(1)).getRights(expectedUrl);
         verify(auditLog, times(1)).rightLookup(ssn, orgNumber);
 
     }

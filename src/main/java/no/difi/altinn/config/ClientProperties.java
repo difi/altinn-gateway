@@ -24,7 +24,10 @@ public class ClientProperties {
     private String apiKey;
 
     @Valid
-    private KeyStoreProperties keystore;
+    private KeyStoreProperties rightsKeystore;
+
+    @Valid
+    private KeyStoreProperties delegationsKeystore;
 
     @Data
     @ToString(exclude = {"password", "keyPassword"})

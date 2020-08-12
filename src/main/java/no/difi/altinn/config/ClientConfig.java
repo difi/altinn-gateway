@@ -1,7 +1,8 @@
 package no.difi.altinn.config;
 
 import lombok.extern.slf4j.Slf4j;
-import no.difi.altinn.AltinnClient;
+import no.difi.altinn.AltinnDelegationsClient;
+import no.difi.altinn.AltinnRightsClient;
 import no.difi.altinn.security.KeyProvider;
 import no.difi.altinn.security.KeyStoreProvider;
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
@@ -25,23 +26,39 @@ import java.security.KeyStore;
 public class ClientConfig {
 
     @Bean
-    public AltinnClient altinnClient(ClientProperties clientProperties, JwtGenerator jwtGenerator) {
-        CloseableHttpClient httpClient = getCloseableHttpClient(clientProperties);
+    public AltinnRightsClient altinnRightsClient(ClientProperties clientProperties, JwtGenerator jwtGenerator) {
+        CloseableHttpClient httpClient = getCloseableRightsHttpClient(clientProperties);
         HttpComponentsClientHttpRequestFactory requestFactory = new HttpComponentsClientHttpRequestFactory();
         requestFactory.setHttpClient(httpClient);
         RestTemplate restTemplate = new RestTemplate(requestFactory);
-        return new AltinnClient(clientProperties, restTemplate, jwtGenerator);
+        return new AltinnRightsClient(clientProperties, restTemplate);
+    }
+
+    @Bean
+    public AltinnDelegationsClient altinnDelegationsClient(ClientProperties clientProperties, JwtGenerator jwtGenerator) {
+        CloseableHttpClient httpClient = getCloseableDelegationsHttpClient(clientProperties);
+        HttpComponentsClientHttpRequestFactory requestFactory = new HttpComponentsClientHttpRequestFactory();
+        requestFactory.setHttpClient(httpClient);
+        RestTemplate restTemplate = new RestTemplate(requestFactory);
+        return new AltinnDelegationsClient(clientProperties, restTemplate, jwtGenerator);
     }
 
     @Bean
     public JwtGenerator jwtGenerator(JwkProperties jwkProperties, ClientProperties clientProperties, RestTemplate restTemplate, KeyProvider keyProvider) {
-        return new JwtGenerator(jwkProperties, clientProperties, restTemplate, keyProvider);
+        return new JwtGenerator(jwkProperties, restTemplate, keyProvider);
     }
 
-    @Bean
-    public CloseableHttpClient getCloseableHttpClient(ClientProperties properties) {
+    @Bean(name="rights-http-client")
+    public CloseableHttpClient getCloseableRightsHttpClient(ClientProperties properties) {
         return HttpClients.custom()
-                .setSSLSocketFactory(new SSLConnectionSocketFactory(sslContext(properties)))
+                .setSSLSocketFactory(new SSLConnectionSocketFactory(sslContext(properties.getRightsKeystore())))
+                .build();
+    }
+
+    @Bean(name="delegations-http-client")
+    public CloseableHttpClient getCloseableDelegationsHttpClient(ClientProperties properties) {
+        return HttpClients.custom()
+                .setSSLSocketFactory(new SSLConnectionSocketFactory(sslContext(properties.getDelegationsKeystore())))
                 .build();
     }
 
@@ -50,9 +67,8 @@ public class ClientConfig {
         return new RestTemplate();
     }
 
-    private SSLContext sslContext(ClientProperties properties) {
+    private SSLContext sslContext(ClientProperties.KeyStoreProperties keyProperties) {
         try {
-            final ClientProperties.KeyStoreProperties keyProperties = properties.getKeystore();
             KeyStore keyStore = KeyStoreProvider.from(keyProperties).getKeyStore();
             return SSLContexts.custom()
                     .loadKeyMaterial(keyStore, keyProperties.getKeyPassword().toCharArray())
@@ -65,8 +81,8 @@ public class ClientConfig {
     }
 
     @Bean
-    public KeyProvider keyProvider(ClientProperties properties) {
-        final ClientProperties.KeyStoreProperties keyProperties = properties.getKeystore();
+    public KeyProvider delegationsKeyProvider(ClientProperties properties) {
+        final ClientProperties.KeyStoreProperties keyProperties = properties.getDelegationsKeystore();
         KeyStore keyStore = KeyStoreProvider.from(keyProperties).getKeyStore();
         return new KeyProvider(keyStore, keyProperties.getKeyAlias(), keyProperties.getKeyPassword());
     }
