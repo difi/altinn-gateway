@@ -63,6 +63,36 @@ public class RightControllerTest {
     }
 
     @Test
+    public void getRolesWithOData() {
+        String ssn = "30045002388";
+        String orgNumber = "910027913";
+        String serviceCode1 = "5455";
+        String serviceCode2 = "5456";
+        String testUrl = "/altinn-api-mock/rights?subject="+ssn+"&reportee="+orgNumber+
+                "&ForceEIAuthentication=$filter=ServiceCode+eq+%27" + serviceCode1 +
+                "%27+or+ServiceCode+eq+%27" + serviceCode2 + "%27";
+
+        configureFor("localhost", 9991);
+        stubFor(get(urlEqualTo(testUrl))
+                .willReturn(aResponse()
+                        .withStatus(200)
+                        .withHeader("Content-Type", "application/json")
+                        .withBodyFile("rights-test.json")));
+
+        String[] serviceCodes = new String[]{serviceCode1, serviceCode2};
+        ResponseEntity<RightResponse> roleList = rightController.getRolesWithServiceCodes(ssn, orgNumber, serviceCodes);
+
+        RightResponse body = roleList.getBody();
+
+        assertNotNull(body);
+        assertEquals(ssn, body.getPersonIdentificator());
+        assertEquals(orgNumber, body.getOrganizationNumber());
+        assertEquals(new HashSet<>(Arrays.asList(serviceCodes)), body.getServiceCodes());
+
+        verify(getRequestedFor(urlEqualTo(testUrl)));
+    }
+
+    @Test
     public void testMock() {
         ResponseEntity<RightResponse> roles = rightController.getRoles("06045000883", "910027913");
         assertNotNull(roles.getBody());

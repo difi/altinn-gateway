@@ -58,6 +58,33 @@ public class RightController {
 
     }
 
+    @GetMapping(value="/serviceCodes")
+    @ApiOperation(value = "Rettigheter registrert i Altinn for en person i kontekst av en organisasjon fra liste.")
+    public ResponseEntity getRolesWithServiceCodes(@ApiParam(value = "Personidentifikator") @RequestParam(value = "person_identificator") String personIdentificator,
+                                   @ApiParam(value = "Organisasjonsnummer") @RequestParam(value = "organization_number") String organizationNumber,
+                                   @ApiParam(value = "ServiceCodes") @RequestParam(value = "service_codes") String[] serviceCodes
+                                                   ){
+        if (serviceCodes == null || serviceCodes.length == 0) {
+            return ResponseEntity.noContent().build();
+        }
+        if(!SsnValidator.isValid(personIdentificator)) {
+            log.warn("pid: "+personIdentificator+", ugyldig personidentifikator");
+            return new ResponseEntity<>("ugyldig personidentifikator", HttpStatus.BAD_REQUEST);
+        }
+
+        if(!OrgnrValidator.isValid((organizationNumber))) {
+            log.warn("orgnr: "+organizationNumber+", ugyldig organisasjonsnummer");
+            return new ResponseEntity<>("ugyldig organisasjonsnummer", HttpStatus.BAD_REQUEST);
+        }
+
+        if (mockEnabled && personIdentificator.equals(pidServiceCodes)) {
+            return getMockServiceCodes(personIdentificator, organizationNumber);
+        } else {
+            return ResponseEntity.ok(RightResponse.fromRightWrapper(altinnService.getRightsFromOData(personIdentificator, organizationNumber,serviceCodes)));
+        }
+
+    }
+
     private ResponseEntity<RightResponse> getMockServiceCodes(String personIdentificator, String organizationNumber) {
         return ResponseEntity.ok(RightResponse.builder()
                 .personIdentificator(personIdentificator)

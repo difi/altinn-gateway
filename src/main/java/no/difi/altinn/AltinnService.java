@@ -11,8 +11,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import java.io.UnsupportedEncodingException;
 import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -42,6 +46,15 @@ public class AltinnService {
         return responseEntity.getBody();
     }
 
+    public RightResource getRightsFromOData(String subject, String reportee, String[] serviceCodes){
+        ResponseEntity<RightResource> responseEntity = rightsClient.getRights(getOdataRightsUri(subject, reportee, serviceCodes));
+        if(responseEntity.getStatusCode() == HttpStatus.OK) {
+            auditLog.rightLookup(subject, reportee);
+        }
+
+        return responseEntity.getBody();
+    }
+
     URI getUrlWithParameters(String scope, String consumerOrg, String supplierOrg) {
         UriComponentsBuilder builder = delegationsClient.getAltinnURIBuilder()
                 .pathSegment("delegations")
@@ -62,5 +75,33 @@ public class AltinnService {
                 .queryParam("reportee", reportee)
                 .queryParam("ForceEIAuthentication", "");
         return builder.buildAndExpand().toUri();
+    }
+
+    URI getOdataRightsUri(String subject, String reportee, String[] serviceCodes){
+        UriComponentsBuilder builder = rightsClient.getAltinnAuthorizationURIBuilder()
+                .pathSegment("rights")
+                .queryParam("subject", subject)
+                .queryParam("reportee", reportee)
+                .queryParam("ForceEIAuthentication", "");
+        String uriString = builder.buildAndExpand().toUriString();
+        try {
+            uriString += ("$filter=" + createConcatenatedServiceCodeString(serviceCodes));
+            return new URI(uriString);
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+            log.error("Something wrong with the construction of the URI", e);
+            return null;
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+            log.error("Something wrong with the construction of the URI", e);
+            return null;
+        }
+    }
+
+    protected String createConcatenatedServiceCodeString(String[] serviceCodes) throws UnsupportedEncodingException {
+        List<String> predicates = Arrays.stream(serviceCodes)
+                .map(serviceCode -> "ServiceCode eq '" + serviceCode + "'")
+                .collect(Collectors.toList());
+        return java.net.URLEncoder.encode(String.join(" or ", predicates), "UTF-8");
     }
 }
