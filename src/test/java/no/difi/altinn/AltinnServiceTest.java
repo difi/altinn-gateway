@@ -110,7 +110,7 @@ public class AltinnServiceTest {
         AltinnService altinnService = new AltinnService(altinnRightsClient, altinnDelegationsClient, auditLog);
 
         URI odataRightsUri = altinnService.getOdataRightsUri(ssn, orgNumber, serviceCodes);
-        assertEquals("https://tt02.altinn.no/api/serviceowner/authorization/rights?subject=00000000001&reportee=000000002&ForceEIAuthentication=$filter=ServiceCode+eq+%275540%27+or+ServiceCode+eq+%275539%27+or+ServiceCode+eq+%275538%27"
+        assertEquals("https://tt02.altinn.no/api/serviceowner/authorization/rights?subject=00000000001&reportee=000000002&ForceEIAuthentication=&$filter=ServiceCode+eq+%275540%27+or+ServiceCode+eq+%275539%27+or+ServiceCode+eq+%275538%27"
                 , odataRightsUri.toString());
     }
 

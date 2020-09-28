@@ -85,7 +85,7 @@ public class AltinnService {
                 .queryParam("ForceEIAuthentication", "");
         String uriString = builder.buildAndExpand().toUriString();
         try {
-            uriString += ("$filter=" + createConcatenatedServiceCodeString(serviceCodes));
+            uriString += ("&$filter=" + createConcatenatedServiceCodeString(serviceCodes));
             return new URI(uriString);
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();

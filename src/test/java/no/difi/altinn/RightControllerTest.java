@@ -69,7 +69,7 @@ public class RightControllerTest {
         String serviceCode1 = "5455";
         String serviceCode2 = "5456";
         String testUrl = "/altinn-api-mock/rights?subject="+ssn+"&reportee="+orgNumber+
-                "&ForceEIAuthentication=$filter=ServiceCode+eq+%27" + serviceCode1 +
+                "&ForceEIAuthentication=&$filter=ServiceCode+eq+%27" + serviceCode1 +
                 "%27+or+ServiceCode+eq+%27" + serviceCode2 + "%27";
 
         configureFor("localhost", 9991);
