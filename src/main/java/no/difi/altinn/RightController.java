@@ -58,11 +58,11 @@ public class RightController {
 
     }
 
-    @GetMapping(value="/serviceCodes")
+    @GetMapping(value="/servicecodes")
     @ApiOperation(value = "Rettigheter registrert i Altinn for en person i kontekst av en organisasjon fra liste.")
     public ResponseEntity getRolesWithServiceCodes(@ApiParam(value = "Personidentifikator") @RequestParam(value = "person_identificator") String personIdentificator,
                                    @ApiParam(value = "Organisasjonsnummer") @RequestParam(value = "organization_number") String organizationNumber,
-                                   @ApiParam(value = "ServiceCodes") @RequestParam(value = "service_codes") String[] serviceCodes
+                                   @ApiParam(value = "ServiceCodes") @RequestParam(value = "servicecodes") String[] serviceCodes
                                                    ){
         if (serviceCodes == null || serviceCodes.length == 0) {
             return ResponseEntity.noContent().build();
