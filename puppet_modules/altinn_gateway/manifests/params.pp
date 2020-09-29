@@ -14,7 +14,7 @@ class altinn_gateway::params {
   $application                      = 'altinn-gateway'
   $connect_timeout                  = 10000
   $read_timeout                     = 10000
-  $altinn_url                       = 'https://at23.altinn.cloud/maskinporten-api'
+  $altinn_url                       = 'https://tt02.altinn.no/maskinporten-api'
   $altinn_escape_scopenames         = false
   $altinn_rights_keystore_type             = 'JKS'
   $altinn_rights_keystore_filename         = 'difi-virkscert-altinn.jks'
