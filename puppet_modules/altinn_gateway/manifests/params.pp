@@ -31,8 +31,8 @@ class altinn_gateway::params {
   $altinn_gateway_client_id         = 'altinn-gateway'
   $altinn_gateway_cache_max = 500
   $altinn_gateway_cache_expire_s = 50
-  $maskinporten_token_endpoint      = 'https://oidc-test1.difi.eon.no/idporten-oidc-provider/token'
-  $maskinporten_aud                 = 'https://oidc-test1.difi.eon.no/idporten-oidc-provider/'
+  $maskinporten_token_endpoint      = 'https://ver2.maskinporten.no/token'
+  $maskinporten_aud                 = 'https://ver2.maskinporten.no/'
   $altinn_aud_endpoint              = 'https://tt02.altinn.no/maskinporten-api/'
   $altinn_access_scopes             = 'altinn:maskinporten/delegations.admin'
   $server_tomcat_max_threads        = 200
